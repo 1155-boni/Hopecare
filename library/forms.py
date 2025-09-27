@@ -4,9 +4,10 @@ from .models import StudentBookRecord, SchoolRecord, Book
 class StudentBookRecordForm(forms.ModelForm):
     class Meta:
         model = StudentBookRecord
-        fields = ['book', 'date_read', 'notes']
+        fields = ['book', 'custom_title', 'date_read', 'notes']
         widgets = {
             'date_read': forms.DateInput(attrs={'type': 'date'}),
+            'custom_title': forms.TextInput(attrs={'placeholder': 'Enter custom book title if not in library'}),
         }
 
 class SchoolRecordForm(forms.ModelForm):

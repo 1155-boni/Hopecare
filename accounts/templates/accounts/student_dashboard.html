@@ -23,7 +23,7 @@
             <h3>Progress</h3>
             <p>Books Read: {{ book_records.count }}</p>
             <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: {{ book_records.count|mul:10 }}%" aria-valuenow="{{ book_records.count }}" aria-valuemin="0" aria-valuemax="10"> {{ book_records.count }}/10</div>
+                <div class="progress-bar" role="progressbar" style="width: {{ progress_width }}%" aria-valuenow="{{ book_records.count }}" aria-valuemin="0" aria-valuemax="10"> {{ book_records.count }}/10</div>
             </div>
         </div>
     </div>

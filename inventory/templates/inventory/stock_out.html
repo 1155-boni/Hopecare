@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Stock Out - Hopecare{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Stock Out</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.custom_name.label_tag }}
+            {{ form.custom_name }}
+            {% if form.custom_name.errors %}
+                <div class="text-danger">{{ form.custom_name.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.quantity.label_tag }}
+            {{ form.quantity }}
+            {% if form.quantity.errors %}
+                <div class="text-danger">{{ form.quantity.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            {{ form.notes.label_tag }}
+            {{ form.notes }}
+            {% if form.notes.errors %}
+                <div class="text-danger">{{ form.notes.errors }}</div>
+            {% endif %}
+        </div>
+        {% if form.non_field_errors %}
+            <div class="text-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <button type="submit" class="btn btn-primary">Remove Stock</button>
+        <a href="{% url 'storekeeper_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </form>
+</div>
+{% endblock %}

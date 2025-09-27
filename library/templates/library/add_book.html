@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Book - Hopecare{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add New Book</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.title.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.author.id_for_label }}" class="form-label">Author</label>
+            {{ form.author }}
+            {% if form.author.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.author.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.isbn.id_for_label }}" class="form-label">ISBN</label>
+            {{ form.isbn }}
+            {% if form.isbn.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.isbn.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.published_date.id_for_label }}" class="form-label">Published Date</label>
+            {{ form.published_date }}
+            {% if form.published_date.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.published_date.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ form.description.errors }}
+                </div>
+            {% endif %}
+        </div>
+        <button type="submit" class="btn btn-primary">Add Book</button>
+        <a href="{% url 'librarian_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </form>
+</div>
+{% endblock %}

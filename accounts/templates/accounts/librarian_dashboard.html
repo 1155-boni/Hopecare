@@ -50,7 +50,10 @@
     </div>
     <div class="row mt-4">
         <div class="col-md-12">
-            <h3>Book Records</h3>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>Book Records</h3>
+                <a href="{% url 'add_book' %}" class="btn btn-primary">Add Book</a>
+            </div>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>

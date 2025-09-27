@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, UserProfileForm
 from .models import User, AuditLog
 from library.models import StudentBookRecord, SchoolRecord
 from inventory.models import Stock
@@ -18,6 +20,24 @@ def signup(request):
         form = CustomUserCreationForm()
     return render(request, 'accounts/signup.html', {'form': form})
 
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            AuditLog.objects.create(user=user, action='Login', details='User logged in')
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'accounts/login.html')
+
+def logout_view(request):
+    AuditLog.objects.create(user=request.user, action='Logout', details='User logged out')
+    logout(request)
+    return redirect('home')
+
 def home(request):
     if request.user.is_authenticated:
         if request.user.role == 'student':
@@ -30,15 +50,30 @@ def home(request):
             return redirect('admin_dashboard')
     return render(request, 'home.html', {'user': request.user})
 
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully.')
+            AuditLog.objects.create(user=request.user, action='Update Profile', details='User updated profile')
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=request.user)
+    return render(request, 'accounts/profile.html', {'form': form})
+
 def student_dashboard(request):
     if not request.user.is_authenticated or request.user.role != 'student':
         return redirect('home')
     book_records = StudentBookRecord.objects.filter(student=request.user)
     school_records = SchoolRecord.objects.filter(student=request.user)
+    progress_width = min(book_records.count() * 10, 100)  # Cap at 100%
     context = {
         'book_records': book_records,
         'school_records': school_records,
         'badge': request.user.badge,
+        'progress_width': progress_width,
     }
     return render(request, 'accounts/student_dashboard.html', context)
 

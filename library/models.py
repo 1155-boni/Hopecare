@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import User
+from cloudinary.models import CloudinaryField
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
@@ -7,17 +8,21 @@ class Book(models.Model):
     isbn = models.CharField(max_length=13, unique=True)
     published_date = models.DateField(null=True, blank=True)
     description = models.TextField(blank=True)
+    cover = CloudinaryField('image', blank=True, null=True)
 
     def __str__(self):
         return self.title
 
 class StudentBookRecord(models.Model):
     student = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'student'})
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, null=True, blank=True)
+    custom_title = models.CharField(max_length=200, blank=True)
     date_read = models.DateField()
     notes = models.TextField(blank=True)
 
     def __str__(self):
+        if self.custom_title:
+            return f"{self.student.username} - {self.custom_title}"
         return f"{self.student.username} - {self.book.title}"
 
 class SchoolRecord(models.Model):

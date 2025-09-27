@@ -29,7 +29,8 @@
     <div class="row mt-4">
         <div class="col-md-12">
             <h3>All Stocks</h3>
-            <a href="#" class="btn btn-primary mb-3">Add Stock</a>
+            <a href="{% url 'stock_in' %}" class="btn btn-primary mb-3">Add Stock</a>
+            <a href="{% url 'stock_out' %}" class="btn btn-secondary mb-3 ms-2">Remove Stock</a>
             <div class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -47,12 +48,12 @@
                             <tr>
                                 <td>{{ stock.item.name }}</td>
                                 <td>{{ stock.quantity }}</td>
-                                <td>{{ stock.stock_in_date }}</td>
+                                <td>{{ stock.stock_in_date|default:"N/A" }}</td>
                                 <td>{{ stock.stock_out_date|default:"N/A" }}</td>
-                                <td>{{ stock.notes }}</td>
+                                <td>{{ stock.notes|default:"N/A" }}</td>
                                 <td>
-                                    <a href="#" class="btn btn-sm btn-success">Stock In</a>
-                                    <a href="#" class="btn btn-sm btn-danger">Stock Out</a>
+                                    <a href="{% url 'stock_in' %}" class="btn btn-sm btn-success">Stock In</a>
+                                    <a href="{% url 'stock_out' %}" class="btn btn-sm btn-danger">Stock Out</a>
                                 </td>
                             </tr>
                         {% empty %}

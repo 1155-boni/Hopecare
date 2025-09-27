@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: Hopecare
+      POSTGRES_USER: Boni
+      POSTGRES_PASSWORD: boni3bolo3
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=django-insecure-random-key-for-development
+      - DEBUG=True
+      - DATABASE_NAME=Hopecare
+      - DATABASE_USER=Boni
+      - DATABASE_PASSWORD=boni3bolo3
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - CLOUDINARY_NAME=dvkbgyjx7
+      - CLOUDINARY_API_KEY=257983898554835
+      - CLOUDINARY_SECRET_KEY=BPGAxpafpHLO40Fz8gcK8oUVai4
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+      - static_volume:/app/static
+      - media_volume:/app/media
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
