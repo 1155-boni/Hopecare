@@ -53,14 +53,14 @@ def home(request):
 @login_required
 def profile(request):
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, 'Profile updated successfully.')
             AuditLog.objects.create(user=request.user, action='Update Profile', details='User updated profile')
             return redirect('profile')
     else:
-        form = UserProfileForm(instance=request.user)
+        form = UserProfileForm(instance=request.user, user=request.user)
     return render(request, 'accounts/profile.html', {'form': form})
 
 def student_dashboard(request):

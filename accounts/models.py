@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 class User(AbstractUser):
     ROLE_CHOICES = [
@@ -18,7 +19,7 @@ class User(AbstractUser):
         ('diamond', 'Diamond'),
     ]
     badge = models.CharField(max_length=20, choices=BADGE_CHOICES, default='none')
-    profile_picture = models.ImageField(upload_to='profiles/', null=True, blank=True)
+    profile_picture = CloudinaryField('image', blank=True, null=True)
 
     def __str__(self):
         return f"{self.username} ({self.role})"

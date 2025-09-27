@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from accounts import views as accounts_views
 from accounts.api import UserViewSet, AuditLogViewSet
 from library.api import BookViewSet, StudentBookRecordViewSet, SchoolRecordViewSet
 from inventory.api import ItemViewSet, StockViewSet
@@ -33,7 +34,7 @@ router.register(r'stocks', StockViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('', include('accounts.urls')),
+    path('', accounts_views.home, name='home'),
     path('accounts/', include('accounts.urls')),
     path('library/', include('library.urls')),
     path('inventory/', include('inventory.urls')),

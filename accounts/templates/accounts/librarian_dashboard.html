@@ -3,85 +3,136 @@
 {% block title %}Librarian Dashboard{% endblock %}
 
 {% block content %}
-    <h2>Librarian Dashboard</h2>
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Students</h3>
-            <input type="text" id="search" placeholder="Search students..." class="form-control mb-3">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Badge</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="students-table">
-                        {% for student in students %}
-                            <tr>
-                                <td>{{ student.get_full_name }}</td>
-                                <td>{{ student.email }}</td>
-                                <td>{{ student.badge|title }}</td>
-                                <td>
-                                    <a href="{% url 'preview_student' student.id %}" class="btn btn-sm btn-info">Preview</a>
-                                    <form method="post" action="{% url 'award_badge' student.id %}" style="display:inline;">
-                                        {% csrf_token %}
-                                        <select name="badge" class="form-select form-select-sm" style="display:inline;width:auto;">
-                                            <option value="bronze">Bronze</option>
-                                            <option value="silver">Silver</option>
-                                            <option value="gold">Gold</option>
-                                            <option value="diamond">Diamond</option>
-                                        </select>
-                                        <button type="submit" class="btn btn-sm btn-warning">Award</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4">No students found.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+<div class="container-fluid py-4">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-success text-white text-center py-4 rounded-top-4">
+                        <h1 class="mb-0"><i class="bi bi-book me-2"></i>Librarian Dashboard</h1>
+                        <p class="mb-0">Manage students, books, and reading records</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                        <h4 class="mb-0"><i class="bi bi-people me-2"></i>Students Management</h4>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="mb-4">
+                            <input type="text" id="search" placeholder="Search students by name..." class="form-control form-control-lg rounded-pill">
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th><i class="bi bi-person me-1"></i>Name</th>
+                                        <th><i class="bi bi-envelope me-1"></i>Email</th>
+                                        <th><i class="bi bi-award me-1"></i>Badge</th>
+                                        <th><i class="bi bi-gear me-1"></i>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-table">
+                                    {% for student in students %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ student.get_full_name }}</strong>
+                                            </td>
+                                            <td>{{ student.email }}</td>
+                                            <td>
+                                                <span class="badge bg-{% if student.badge == 'bronze' %}warning{% elif student.badge == 'silver' %}secondary{% elif student.badge == 'gold' %}warning{% elif student.badge == 'diamond' %}info{% else %}light text-dark{% endif %}">
+                                                    {{ student.badge|title|default:"None" }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{% url 'preview_student' student.id %}" class="btn btn-outline-info btn-sm rounded-pill">
+                                                        <i class="bi bi-eye"></i> Preview
+                                                    </a>
+                                                    <form method="post" action="{% url 'award_badge' student.id %}" class="d-inline ms-2">
+                                                        {% csrf_token %}
+                                                        <div class="input-group input-group-sm" style="width: auto;">
+                                                            <select name="badge" class="form-select rounded-pill">
+                                                                <option value="bronze">Bronze</option>
+                                                                <option value="silver">Silver</option>
+                                                                <option value="gold">Gold</option>
+                                                                <option value="diamond">Diamond</option>
+                                                            </select>
+                                                            <button type="submit" class="btn btn-warning btn-sm rounded-pill">
+                                                                <i class="bi bi-trophy"></i> Award
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4">
+                                                <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                                                <p class="text-muted mt-3">No students found.</p>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Book Records Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-info text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0"><i class="bi bi-journal-text me-2"></i>Book Records</h4>
+                        <a href="{% url 'add_book' %}" class="btn btn-light btn-lg rounded-pill px-4">
+                            <i class="bi bi-plus-circle me-2"></i>Add Book
+                        </a>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th><i class="bi bi-person me-1"></i>Student</th>
+                                        <th><i class="bi bi-book me-1"></i>Book</th>
+                                        <th><i class="bi bi-calendar me-1"></i>Date Read</th>
+                                        <th><i class="bi bi-sticky me-1"></i>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for record in book_records %}
+                                        <tr>
+                                            <td><strong>{{ record.student.get_full_name }}</strong></td>
+                                            <td>{{ record.book.title }}</td>
+                                            <td>{{ record.date_read|date:"M d, Y" }}</td>
+                                            <td>{{ record.notes|truncatechars:50|default:"No notes" }}</td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4">
+                                                <i class="bi bi-journal-x text-muted" style="font-size: 3rem;"></i>
+                                                <p class="text-muted mt-3">No book records found.</p>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <h3>Book Records</h3>
-                <a href="{% url 'add_book' %}" class="btn btn-primary">Add Book</a>
-            </div>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Book</th>
-                            <th>Date Read</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for record in book_records %}
-                            <tr>
-                                <td>{{ record.student.get_full_name }}</td>
-                                <td>{{ record.book.title }}</td>
-                                <td>{{ record.date_read }}</td>
-                                <td>{{ record.notes }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="4">No book records.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+</div>
     <script>
         // Basic search functionality
         document.getElementById('search').addEventListener('keyup', function() {

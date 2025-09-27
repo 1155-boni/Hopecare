@@ -12,6 +12,19 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username', 'email', 'first_name', 'last_name', 'role', 'password1', 'password2')
 
 class UserProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+        if user and user.role not in ['librarian', 'admin']:
+            self.fields.pop('badge', None)
+
+        # Add Bootstrap classes
+        self.fields['first_name'].widget.attrs.update({'class': 'form-control form-control-lg rounded-pill'})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control form-control-lg rounded-pill'})
+        self.fields['profile_picture'].widget.attrs.update({'class': 'form-control form-control-lg'})
+        if 'badge' in self.fields:
+            self.fields['badge'].widget.attrs.update({'class': 'form-select form-select-lg rounded-pill'})
+
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'profile_picture', 'badge']
@@ -21,11 +34,4 @@ class UserProfileForm(forms.ModelForm):
         if profile_picture:
             if profile_picture.size > 5 * 1024 * 1024:  # 5MB max
                 raise forms.ValidationError('Image file too large (max 5MB).')
-            img = Image.open(profile_picture)
-            if img.height > 500 or img.width > 500:
-                output_size = (500, 500)
-                img.thumbnail(output_size, Image.Resampling.LANCZOS)
-                buffer = io.BytesIO()
-                img.save(buffer, format='JPEG', quality=90)
-                profile_picture.seek(0)
         return profile_picture

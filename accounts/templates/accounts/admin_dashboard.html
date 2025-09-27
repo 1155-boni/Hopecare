@@ -3,137 +3,207 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-    <h2>Admin Dashboard</h2>
+<div class="container-fluid py-4">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-dark text-white text-center py-4 rounded-top-4">
+                        <h1 class="mb-0"><i class="bi bi-shield-check me-2"></i>Admin Dashboard</h1>
+                        <p class="mb-0">Comprehensive system overview and management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <!-- Bootstrap Tabs -->
-    <ul class="nav nav-tabs" id="adminTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="librarian-tab" data-bs-toggle="tab" data-bs-target="#librarian" type="button" role="tab">Librarian View</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="storekeeper-tab" data-bs-toggle="tab" data-bs-target="#storekeeper" type="button" role="tab">Storekeeper View</button>
-        </li>
-    </ul>
+        <!-- Bootstrap Tabs -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <ul class="nav nav-pills nav-fill" id="adminTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active rounded-pill me-2" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">
+                            <i class="bi bi-house-door me-2"></i>Overview
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill me-2" id="librarian-tab" data-bs-toggle="tab" data-bs-target="#librarian" type="button" role="tab">
+                            <i class="bi bi-book me-2"></i>Librarian View
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link rounded-pill" id="storekeeper-tab" data-bs-toggle="tab" data-bs-target="#storekeeper" type="button" role="tab">
+                            <i class="bi bi-box-seam me-2"></i>Storekeeper View
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
 
     <div class="tab-content" id="adminTabsContent">
         <!-- Overview Tab -->
         <div class="tab-pane fade show active" id="overview" role="tabpanel">
-            <div class="row mt-3">
-                <div class="col-md-12">
-                    <h3>Users</h3>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Badge</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for user in users %}
-                                    <tr>
-                                        <td>{{ user.get_full_name }}</td>
-                                        <td>{{ user.email }}</td>
-                                        <td>{{ user.role|title }}</td>
-                                        <td>{{ user.badge|title }}</td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="4">No users.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+            <!-- Users Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                            <h4 class="mb-0"><i class="bi bi-people me-2"></i>System Users</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th><i class="bi bi-person me-1"></i>Name</th>
+                                            <th><i class="bi bi-envelope me-1"></i>Email</th>
+                                            <th><i class="bi bi-person-badge me-1"></i>Role</th>
+                                            <th><i class="bi bi-award me-1"></i>Badge</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in users %}
+                                            <tr>
+                                                <td><strong>{{ user.get_full_name }}</strong></td>
+                                                <td>{{ user.email }}</td>
+                                                <td><span class="badge bg-secondary">{{ user.role|title }}</span></td>
+                                                <td>
+                                                    <span class="badge bg-{% if user.badge == 'bronze' %}warning{% elif user.badge == 'silver' %}secondary{% elif user.badge == 'gold' %}warning{% elif user.badge == 'diamond' %}info{% else %}light text-dark{% endif %}">
+                                                        {{ user.badge|title|default:"None" }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center py-4">
+                                                    <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                                                    <p class="text-muted mt-3">No users found.</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <h3>Book Records</h3>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Book</th>
-                                    <th>Date Read</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for record in book_records %}
-                                    <tr>
-                                        <td>{{ record.student.get_full_name }}</td>
-                                        <td>{{ record.book.title }}</td>
-                                        <td>{{ record.date_read }}</td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="3">No book records.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+
+            <!-- Records Section -->
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-success text-white py-3 rounded-top-4">
+                            <h4 class="mb-0"><i class="bi bi-book me-2"></i>Book Records</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Book</th>
+                                            <th>Date Read</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for record in book_records %}
+                                            <tr>
+                                                <td><strong>{{ record.student.get_full_name }}</strong></td>
+                                                <td>{{ record.book.title }}</td>
+                                                <td>{{ record.date_read|date:"M d, Y" }}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-center py-4">
+                                                    <i class="bi bi-journal-x text-muted" style="font-size: 2rem;"></i>
+                                                    <p class="text-muted mt-2">No book records.</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <h3>School Records</h3>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Subject</th>
-                                    <th>Grade</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for record in school_records %}
-                                    <tr>
-                                        <td>{{ record.student.get_full_name }}</td>
-                                        <td>{{ record.subject }}</td>
-                                        <td>{{ record.grade }}</td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="3">No school records.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                <div class="col-lg-6">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-info text-white py-3 rounded-top-4">
+                            <h4 class="mb-0"><i class="bi bi-mortarboard me-2"></i>School Records</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Subject</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for record in school_records %}
+                                            <tr>
+                                                <td><strong>{{ record.student.get_full_name }}</strong></td>
+                                                <td>{{ record.subject }}</td>
+                                                <td><span class="badge bg-primary">{{ record.grade }}</span></td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-center py-4">
+                                                <i class="bi bi-mortarboard text-muted" style="font-size: 2rem;"></i>
+                                                <p class="text-muted mt-2">No school records.</p>
+                                            </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <h3>Stocks</h3>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Quantity</th>
-                                    <th>Expiry Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for stock in stocks %}
-                                    <tr>
-                                        <td>{{ stock.item.name }}</td>
-                                        <td>{{ stock.quantity }}</td>
-                                        <td>{{ stock.item.expiry_date }}</td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="3">No stocks.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+
+            <!-- Stocks Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-warning text-dark py-3 rounded-top-4">
+                            <h4 class="mb-0"><i class="bi bi-boxes me-2"></i>Inventory Stocks</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th><i class="bi bi-box me-1"></i>Item</th>
+                                            <th><i class="bi bi-hash me-1"></i>Quantity</th>
+                                            <th><i class="bi bi-calendar-x me-1"></i>Expiry Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for stock in stocks %}
+                                            <tr>
+                                                <td><strong>{{ stock.item.name }}</strong></td>
+                                                <td>
+                                                    <span class="badge bg-{% if stock.quantity <= 5 %}danger{% elif stock.quantity <= 10 %}warning{% else %}success{% endif %} fs-6">
+                                                        {{ stock.quantity }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ stock.item.expiry_date|date:"M d, Y"|default:"N/A" }}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="3" class="text-center py-4">
+                                                    <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+                                                    <p class="text-muted mt-3">No stock records found.</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,81 +211,118 @@
 
         <!-- Librarian View Tab -->
         <div class="tab-pane fade" id="librarian" role="tabpanel">
-            <div class="row mt-3">
-                <div class="col-md-12">
-                    <h3>Students</h3>
-                    <input type="text" id="search-students" placeholder="Search students..." class="form-control mb-3">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Badge</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="students-table">
-                                {% for student in students %}
-                                    <tr>
-                                        <td>{{ student.get_full_name }}</td>
-                                        <td>{{ student.email }}</td>
-                                        <td>{{ student.badge|title }}</td>
-                                        <td>
-                                            <a href="{% url 'preview_student' student.id %}" class="btn btn-sm btn-info">Preview</a>
-                                            <form method="post" action="{% url 'award_badge' student.id %}" style="display:inline;">
-                                                {% csrf_token %}
-                                                <select name="badge" class="form-select form-select-sm" style="display:inline;width:auto;">
-                                                    <option value="bronze">Bronze</option>
-                                                    <option value="silver">Silver</option>
-                                                    <option value="gold">Gold</option>
-                                                    <option value="diamond">Diamond</option>
-                                                </select>
-                                                <button type="submit" class="btn btn-sm btn-warning">Award</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="4">No students found.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+            <!-- Students Section -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-primary text-white py-3 rounded-top-4">
+                            <h4 class="mb-0"><i class="bi bi-people me-2"></i>Students Management</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="mb-4">
+                                <input type="text" id="search-students" placeholder="Search students by name..." class="form-control form-control-lg rounded-pill">
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th><i class="bi bi-person me-1"></i>Name</th>
+                                            <th><i class="bi bi-envelope me-1"></i>Email</th>
+                                            <th><i class="bi bi-award me-1"></i>Badge</th>
+                                            <th><i class="bi bi-gear me-1"></i>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="students-table">
+                                        {% for student in students %}
+                                            <tr>
+                                                <td>
+                                                    <strong>{{ student.get_full_name }}</strong>
+                                                </td>
+                                                <td>{{ student.email }}</td>
+                                                <td>
+                                                    <span class="badge bg-{% if student.badge == 'bronze' %}warning{% elif student.badge == 'silver' %}secondary{% elif student.badge == 'gold' %}warning{% elif student.badge == 'diamond' %}info{% else %}light text-dark{% endif %}">
+                                                        {{ student.badge|title|default:"None" }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a href="{% url 'preview_student' student.id %}" class="btn btn-outline-info btn-sm rounded-pill">
+                                                            <i class="bi bi-eye"></i> Preview
+                                                        </a>
+                                                        <form method="post" action="{% url 'award_badge' student.id %}" class="d-inline ms-2">
+                                                            {% csrf_token %}
+                                                            <div class="input-group input-group-sm" style="width: auto;">
+                                                                <select name="badge" class="form-select rounded-pill">
+                                                                    <option value="bronze">Bronze</option>
+                                                                    <option value="silver">Silver</option>
+                                                                    <option value="gold">Gold</option>
+                                                                    <option value="diamond">Diamond</option>
+                                                                </select>
+                                                                <button type="submit" class="btn btn-warning btn-sm rounded-pill">
+                                                                    <i class="bi bi-trophy"></i> Award
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center py-4">
+                                                    <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
+                                                    <p class="text-muted mt-3">No students found.</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3>Book Records</h3>
-                        <a href="{% url 'add_book' %}" class="btn btn-primary">Add Book</a>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Book</th>
-                                    <th>Date Read</th>
-                                    <th>Notes</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for record in book_records %}
-                                    <tr>
-                                        <td>{{ record.student.get_full_name }}</td>
-                                        <td>{{ record.book.title }}</td>
-                                        <td>{{ record.date_read }}</td>
-                                        <td>{{ record.notes }}</td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="4">No book records.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+
+            <!-- Book Records Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-info text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0"><i class="bi bi-journal-text me-2"></i>Book Records</h4>
+                            <a href="{% url 'add_book' %}" class="btn btn-light btn-lg rounded-pill px-4">
+                                <i class="bi bi-plus-circle me-2"></i>Add Book
+                            </a>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th><i class="bi bi-person me-1"></i>Student</th>
+                                            <th><i class="bi bi-book me-1"></i>Book</th>
+                                            <th><i class="bi bi-calendar me-1"></i>Date Read</th>
+                                            <th><i class="bi bi-sticky me-1"></i>Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for record in book_records %}
+                                            <tr>
+                                                <td><strong>{{ record.student.get_full_name }}</strong></td>
+                                                <td>{{ record.book.title }}</td>
+                                                <td>{{ record.date_read|date:"M d, Y" }}</td>
+                                                <td>{{ record.notes|truncatechars:50|default:"No notes" }}</td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="4" class="text-center py-4">
+                                                    <i class="bi bi-journal-x text-muted" style="font-size: 3rem;"></i>
+                                                    <p class="text-muted mt-3">No book records found.</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -223,65 +330,141 @@
 
         <!-- Storekeeper View Tab -->
         <div class="tab-pane fade" id="storekeeper" role="tabpanel">
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <h3>Low Stock Alerts</h3>
-                    <ul class="list-group">
-                        {% for stock in low_stock %}
-                            <li class="list-group-item list-group-item-danger">{{ stock.item.name }} - Quantity: {{ stock.quantity }}</li>
-                        {% empty %}
-                            <li class="list-group-item">No low stock items.</li>
-                        {% endfor %}
-                    </ul>
+            <!-- Alerts Section -->
+            <div class="row g-4 mb-4">
+                <!-- Low Stock Alerts -->
+                <div class="col-lg-6">
+                    <div class="card shadow-lg border-0 rounded-4 h-100">
+                        <div class="card-header bg-danger text-white py-3 rounded-top-4">
+                            <h4 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Low Stock Alerts</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            {% if low_stock %}
+                                <div class="alert alert-danger rounded-3 mb-3">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <strong>Attention Required:</strong> Items below minimum stock levels.
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    {% for stock in low_stock %}
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ stock.item.name }}</strong>
+                                                <br><small class="text-muted">Current quantity: {{ stock.quantity }}</small>
+                                            </div>
+                                            <span class="badge bg-danger">{{ stock.quantity }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                                    <p class="text-success mt-3 fw-bold">All items are well-stocked!</p>
+                                    <p class="text-muted">No low stock alerts at this time.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <h3>Expiring Items</h3>
-                    <ul class="list-group">
-                        {% for stock in expiring %}
-                            <li class="list-group-item list-group-item-warning">{{ stock.item.name }} - Expiry: {{ stock.item.expiry_date }}</li>
-                        {% empty %}
-                            <li class="list-group-item">No expiring items.</li>
-                        {% endfor %}
-                    </ul>
+
+                <!-- Expiring Items -->
+                <div class="col-lg-6">
+                    <div class="card shadow-lg border-0 rounded-4 h-100">
+                        <div class="card-header bg-warning text-dark py-3 rounded-top-4">
+                            <h4 class="mb-0"><i class="bi bi-calendar-x me-2"></i>Expiring Items</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            {% if expiring %}
+                                <div class="alert alert-warning rounded-3 mb-3">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    <strong>Upcoming Expirations:</strong> Items expiring soon.
+                                </div>
+                                <div class="list-group list-group-flush">
+                                    {% for stock in expiring %}
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>{{ stock.item.name }}</strong>
+                                                <br><small class="text-muted">Expires: {{ stock.item.expiry_date|date:"M d, Y" }}</small>
+                                            </div>
+                                            <span class="badge bg-warning text-dark">{{ stock.item.expiry_date|date:"M d" }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-4">
+                                    <i class="bi bi-calendar-check text-success" style="font-size: 3rem;"></i>
+                                    <p class="text-success mt-3 fw-bold">No items expiring soon!</p>
+                                    <p class="text-muted">All items are within their expiry dates.</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-md-12">
-                    <h3>All Stocks</h3>
-                    <a href="{% url 'stock_in' %}" class="btn btn-primary mb-3">Add Stock</a>
-                    <a href="{% url 'stock_out' %}" class="btn btn-secondary mb-3 ms-2">Remove Stock</a>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Quantity</th>
-                                    <th>Stock In Date</th>
-                                    <th>Stock Out Date</th>
-                                    <th>Notes</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for stock in stocks %}
-                                    <tr>
-                                        <td>{{ stock.item.name }}</td>
-                                        <td>{{ stock.quantity }}</td>
-                                        <td>{{ stock.stock_in_date|default:"N/A" }}</td>
-                                        <td>{{ stock.stock_out_date|default:"N/A" }}</td>
-                                        <td>{{ stock.notes|default:"N/A" }}</td>
-                                        <td>
-                                            <a href="{% url 'stock_in' %}" class="btn btn-sm btn-success">Stock In</a>
-                                            <a href="{% url 'stock_out' %}" class="btn btn-sm btn-danger">Stock Out</a>
-                                        </td>
-                                    </tr>
-                                {% empty %}
-                                    <tr>
-                                        <td colspan="6">No stocks.</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+
+            <!-- All Stocks Section -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-info text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0"><i class="bi bi-boxes me-2"></i>All Stocks</h4>
+                            <div>
+                                <a href="{% url 'stock_in' %}" class="btn btn-success btn-lg rounded-pill px-4 me-2">
+                                    <i class="bi bi-plus-circle me-2"></i>Stock In
+                                </a>
+                                <a href="{% url 'stock_out' %}" class="btn btn-danger btn-lg rounded-pill px-4">
+                                    <i class="bi bi-dash-circle me-2"></i>Stock Out
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th><i class="bi bi-box me-1"></i>Item</th>
+                                            <th><i class="bi bi-hash me-1"></i>Quantity</th>
+                                            <th><i class="bi bi-calendar-plus me-1"></i>Stock In Date</th>
+                                            <th><i class="bi bi-calendar-minus me-1"></i>Stock Out Date</th>
+                                            <th><i class="bi bi-sticky me-1"></i>Notes</th>
+                                            <th><i class="bi bi-gear me-1"></i>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for stock in stocks %}
+                                            <tr>
+                                                <td><strong>{{ stock.item.name }}</strong></td>
+                                                <td>
+                                                    <span class="badge bg-{% if stock.quantity <= 5 %}danger{% elif stock.quantity <= 10 %}warning{% else %}success{% endif %} fs-6">
+                                                        {{ stock.quantity }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ stock.stock_in_date|date:"M d, Y"|default:"N/A" }}</td>
+                                                <td>{{ stock.stock_out_date|date:"M d, Y"|default:"N/A" }}</td>
+                                                <td>{{ stock.notes|truncatechars:30|default:"No notes" }}</td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a href="{% url 'stock_in' %}" class="btn btn-outline-success btn-sm rounded-pill">
+                                                            <i class="bi bi-plus"></i> In
+                                                        </a>
+                                                        <a href="{% url 'stock_out' %}" class="btn btn-outline-danger btn-sm rounded-pill ms-1">
+                                                            <i class="bi bi-dash"></i> Out
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% empty %}
+                                            <tr>
+                                                <td colspan="6" class="text-center py-4">
+                                                    <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
+                                                    <p class="text-muted mt-3">No stock records found.</p>
+                                                    <p class="text-muted">Start by adding your first stock item.</p>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

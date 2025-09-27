@@ -58,6 +58,7 @@ INSTALLED_APPS = [
     'inventory',
     'cloudinary_storage',
     'cloudinary',
+    'widget_tweaks',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
