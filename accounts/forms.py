@@ -5,7 +5,7 @@ from PIL import Image
 import io
 
 class CustomUserCreationForm(UserCreationForm):
-    role = forms.ChoiceField(choices=User.ROLE_CHOICES)
+    role = forms.ChoiceField(choices=[('student', 'Student'), ('librarian', 'Librarian'), ('storekeeper', 'Storekeeper')])
 
     class Meta:
         model = User

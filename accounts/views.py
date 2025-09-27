@@ -46,7 +46,7 @@ def home(request):
             return redirect('librarian_dashboard')
         elif request.user.role == 'storekeeper':
             return redirect('storekeeper_dashboard')
-        elif request.user.role == 'admin' and request.user.email == 'admin@example.com':
+        elif request.user.role == 'admin':
             return redirect('admin_dashboard')
     return render(request, 'home.html', {'user': request.user})
 
@@ -102,7 +102,7 @@ def storekeeper_dashboard(request):
     return render(request, 'accounts/storekeeper_dashboard.html', context)
 
 def admin_dashboard(request):
-    if not request.user.is_authenticated or request.user.role != 'admin' or request.user.email != 'admin@example.com':
+    if not request.user.is_authenticated or request.user.role != 'admin':
         return redirect('home')
     users = User.objects.all()
     students = User.objects.filter(role='student')
@@ -146,3 +146,14 @@ def preview_student(request, student_id):
         'school_records': school_records,
     }
     return render(request, 'accounts/preview_student.html', context)
+
+@login_required
+def delete_profile(request):
+    if request.method == 'POST':
+        AuditLog.objects.create(user=request.user, action='Delete Account', details='User deleted their account')
+        request.user.delete()
+        logout(request)
+        messages.success(request, 'Your account has been deleted successfully.')
+        return redirect('home')
+    else:
+        return redirect('profile')

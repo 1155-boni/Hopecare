@@ -65,6 +65,16 @@
         </div>
         <button type="submit" class="btn btn-primary">Update Profile</button>
         <a href="{% url 'home' %}" class="btn btn-secondary">Back to Home</a>
+        <a href="{% url 'logout' %}" class="btn btn-outline-secondary">Logout</a>
     </form>
+
+    <div class="mt-4">
+        <h3>Delete Account</h3>
+        <p class="text-danger">This action cannot be undone and will permanently delete your account and all associated data.</p>
+        <form method="post" action="{% url 'delete_profile' %}" onsubmit="return confirm('Are you sure you want to delete your account? This cannot be undone.');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete My Account</button>
+        </form>
+    </div>
 </div>
 {% endblock %}
