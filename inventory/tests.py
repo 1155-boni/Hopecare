@@ -75,6 +75,7 @@ class InventoryTests(TestCase):
         self.assertTrue(form.is_valid())
         stock_out = form.save()
         self.assertEqual(stock_out.quantity, 15)  # Reduced from 20 to 15
+        self.assertEqual(stock_out.out_quantity, 5)
 
     def test_stock_out_form_invalid_insufficient_quantity(self):
         item = Item.objects.create(name='Low Stock Item')
@@ -109,10 +110,37 @@ class InventoryTests(TestCase):
         self.assertEqual(response.status_code, 302)
         updated_stock = Stock.objects.get(item=item)
         self.assertEqual(updated_stock.quantity, 10)
+        self.assertEqual(updated_stock.out_quantity, 5)
         self.assertEqual(updated_stock.stock_out_date, timezone.now().date())
         audit_log = AuditLog.objects.filter(action='Stock Out').first()
         self.assertIsNotNone(audit_log)
         self.assertIn('Removed 5 of Test Out Item', audit_log.details)
+
+    def test_multiple_stock_outs(self):
+        item = Item.objects.create(name='Multiple Out Item')
+        stock = Stock.objects.create(item=item, quantity=20, stock_in_date=timezone.now().date())
+        # First stock out
+        form_data1 = {
+            'custom_name': 'Multiple Out Item',
+            'quantity': 5,
+            'notes': 'First out'
+        }
+        form1 = StockOutForm(data=form_data1)
+        self.assertTrue(form1.is_valid())
+        stock_after_first = form1.save()
+        self.assertEqual(stock_after_first.quantity, 15)
+        self.assertEqual(stock_after_first.out_quantity, 5)
+        # Second stock out
+        form_data2 = {
+            'custom_name': 'Multiple Out Item',
+            'quantity': 3,
+            'notes': 'Second out'
+        }
+        form2 = StockOutForm(data=form_data2)
+        self.assertTrue(form2.is_valid())
+        stock_after_second = form2.save()
+        self.assertEqual(stock_after_second.quantity, 12)
+        self.assertEqual(stock_after_second.out_quantity, 8)
 
     def test_duplicate_stock_in(self):
         # First stock in

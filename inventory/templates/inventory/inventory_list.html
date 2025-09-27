@@ -46,6 +46,7 @@
                             <th>Quantity</th>
                             <th>Stock In Date</th>
                             <th>Stock Out Date</th>
+                            <th>Stock Out Quantity</th>
                             <th>Notes</th>
                         </tr>
                     </thead>
@@ -56,11 +57,12 @@
                                 <td>{{ stock.quantity }}</td>
                                 <td>{{ stock.stock_in_date|default:"N/A" }}</td>
                                 <td>{{ stock.stock_out_date|default:"N/A" }}</td>
+                                <td>{{ stock.out_quantity|default:"0" }}</td>
                                 <td>{{ stock.notes|default:"N/A" }}</td>
                             </tr>
                         {% empty %}
                             <tr>
-                                <td colspan="5">No stocks.</td>
+                                <td colspan="6">No stocks.</td>
                             </tr>
                         {% endfor %}
                     </tbody>

@@ -4,120 +4,306 @@
 
 {% block content %}
     <h2>Admin Dashboard</h2>
-    <div class="row">
-        <div class="col-md-12">
-            <h3>Users</h3>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Badge</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in users %}
-                            <tr>
-                                <td>{{ user.get_full_name }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.role|title }}</td>
-                                <td>{{ user.badge|title }}</td>
-                            </tr>
+
+    <!-- Bootstrap Tabs -->
+    <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab">Overview</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="librarian-tab" data-bs-toggle="tab" data-bs-target="#librarian" type="button" role="tab">Librarian View</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="storekeeper-tab" data-bs-toggle="tab" data-bs-target="#storekeeper" type="button" role="tab">Storekeeper View</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="adminTabsContent">
+        <!-- Overview Tab -->
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <h3>Users</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Badge</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.get_full_name }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.role|title }}</td>
+                                        <td>{{ user.badge|title }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4">No users.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h3>Book Records</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Book</th>
+                                    <th>Date Read</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in book_records %}
+                                    <tr>
+                                        <td>{{ record.student.get_full_name }}</td>
+                                        <td>{{ record.book.title }}</td>
+                                        <td>{{ record.date_read }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3">No book records.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h3>School Records</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Subject</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in school_records %}
+                                    <tr>
+                                        <td>{{ record.student.get_full_name }}</td>
+                                        <td>{{ record.subject }}</td>
+                                        <td>{{ record.grade }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3">No school records.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h3>Stocks</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Expiry Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stock in stocks %}
+                                    <tr>
+                                        <td>{{ stock.item.name }}</td>
+                                        <td>{{ stock.quantity }}</td>
+                                        <td>{{ stock.item.expiry_date }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="3">No stocks.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Librarian View Tab -->
+        <div class="tab-pane fade" id="librarian" role="tabpanel">
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <h3>Students</h3>
+                    <input type="text" id="search-students" placeholder="Search students..." class="form-control mb-3">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Badge</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-table">
+                                {% for student in students %}
+                                    <tr>
+                                        <td>{{ student.get_full_name }}</td>
+                                        <td>{{ student.email }}</td>
+                                        <td>{{ student.badge|title }}</td>
+                                        <td>
+                                            <a href="{% url 'preview_student' student.id %}" class="btn btn-sm btn-info">Preview</a>
+                                            <form method="post" action="{% url 'award_badge' student.id %}" style="display:inline;">
+                                                {% csrf_token %}
+                                                <select name="badge" class="form-select form-select-sm" style="display:inline;width:auto;">
+                                                    <option value="bronze">Bronze</option>
+                                                    <option value="silver">Silver</option>
+                                                    <option value="gold">Gold</option>
+                                                    <option value="diamond">Diamond</option>
+                                                </select>
+                                                <button type="submit" class="btn btn-sm btn-warning">Award</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4">No students found.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3>Book Records</h3>
+                        <a href="{% url 'add_book' %}" class="btn btn-primary">Add Book</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Book</th>
+                                    <th>Date Read</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in book_records %}
+                                    <tr>
+                                        <td>{{ record.student.get_full_name }}</td>
+                                        <td>{{ record.book.title }}</td>
+                                        <td>{{ record.date_read }}</td>
+                                        <td>{{ record.notes }}</td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="4">No book records.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Storekeeper View Tab -->
+        <div class="tab-pane fade" id="storekeeper" role="tabpanel">
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h3>Low Stock Alerts</h3>
+                    <ul class="list-group">
+                        {% for stock in low_stock %}
+                            <li class="list-group-item list-group-item-danger">{{ stock.item.name }} - Quantity: {{ stock.quantity }}</li>
                         {% empty %}
-                            <tr>
-                                <td colspan="4">No users.</td>
-                            </tr>
+                            <li class="list-group-item">No low stock items.</li>
                         {% endfor %}
-                    </tbody>
-                </table>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h3>Expiring Items</h3>
+                    <ul class="list-group">
+                        {% for stock in expiring %}
+                            <li class="list-group-item list-group-item-warning">{{ stock.item.name }} - Expiry: {{ stock.item.expiry_date }}</li>
+                        {% empty %}
+                            <li class="list-group-item">No expiring items.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <h3>All Stocks</h3>
+                    <a href="{% url 'stock_in' %}" class="btn btn-primary mb-3">Add Stock</a>
+                    <a href="{% url 'stock_out' %}" class="btn btn-secondary mb-3 ms-2">Remove Stock</a>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Stock In Date</th>
+                                    <th>Stock Out Date</th>
+                                    <th>Notes</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stock in stocks %}
+                                    <tr>
+                                        <td>{{ stock.item.name }}</td>
+                                        <td>{{ stock.quantity }}</td>
+                                        <td>{{ stock.stock_in_date|default:"N/A" }}</td>
+                                        <td>{{ stock.stock_out_date|default:"N/A" }}</td>
+                                        <td>{{ stock.notes|default:"N/A" }}</td>
+                                        <td>
+                                            <a href="{% url 'stock_in' %}" class="btn btn-sm btn-success">Stock In</a>
+                                            <a href="{% url 'stock_out' %}" class="btn btn-sm btn-danger">Stock Out</a>
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="6">No stocks.</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <h3>Book Records</h3>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Book</th>
-                            <th>Date Read</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for record in book_records %}
-                            <tr>
-                                <td>{{ record.student.get_full_name }}</td>
-                                <td>{{ record.book.title }}</td>
-                                <td>{{ record.date_read }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="3">No book records.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <h3>School Records</h3>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Subject</th>
-                            <th>Grade</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for record in school_records %}
-                            <tr>
-                                <td>{{ record.student.get_full_name }}</td>
-                                <td>{{ record.subject }}</td>
-                                <td>{{ record.grade }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="3">No school records.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <h3>Stocks</h3>
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Item</th>
-                            <th>Quantity</th>
-                            <th>Expiry Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for stock in stocks %}
-                            <tr>
-                                <td>{{ stock.item.name }}</td>
-                                <td>{{ stock.quantity }}</td>
-                                <td>{{ stock.item.expiry_date }}</td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="3">No stocks.</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+
+    <script>
+        // Search functionality for students table in Librarian View
+        document.getElementById('search-students').addEventListener('keyup', function() {
+            var input = this.value.toLowerCase();
+            var table = document.getElementById('students-table');
+            var tr = table.getElementsByTagName('tr');
+            for (var i = 1; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName('td')[0];
+                if (td) {
+                    if (td.innerHTML.toLowerCase().indexOf(input) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        });
+    </script>
 {% endblock %}

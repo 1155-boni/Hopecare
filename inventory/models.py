@@ -15,6 +15,7 @@ class Stock(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, null=True, blank=True)
     custom_name = models.CharField(max_length=200, blank=True)
     quantity = models.IntegerField()
+    out_quantity = models.IntegerField(default=0, blank=True)
     stock_in_date = models.DateField()
     stock_out_date = models.DateField(null=True, blank=True)
     notes = models.TextField(blank=True)

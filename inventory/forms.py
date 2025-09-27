@@ -77,6 +77,7 @@ class StockOutForm(forms.ModelForm):
         item = Item.objects.get(name=custom_name)
         stock = Stock.objects.filter(item=item, quantity__gt=0).first()
         stock.quantity -= quantity_out
+        stock.out_quantity += quantity_out
         stock.stock_out_date = timezone.now().date()
         stock.notes = cleaned_data.get('notes', '')
         stock.custom_name = custom_name
