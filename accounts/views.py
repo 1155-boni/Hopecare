@@ -3,7 +3,7 @@ from django.contrib.auth import login
 from django.utils import timezone
 from datetime import timedelta
 from .forms import CustomUserCreationForm
-from .models import User
+from .models import User, AuditLog
 from library.models import StudentBookRecord, SchoolRecord
 from inventory.models import Stock
 
@@ -80,3 +80,28 @@ def admin_dashboard(request):
         'stocks': stocks,
     }
     return render(request, 'accounts/admin_dashboard.html', context)
+
+def award_badge(request, student_id):
+    if not request.user.is_authenticated or request.user.role != 'librarian':
+        return redirect('home')
+    if request.method == 'POST':
+        badge = request.POST.get('badge')
+        student = User.objects.get(id=student_id)
+        student.badge = badge
+        student.save()
+        AuditLog.objects.create(user=request.user, action='Award Badge', details=f'Awarded {badge} to {student.email}')
+        return redirect('librarian_dashboard')
+    return redirect('librarian_dashboard')
+
+def preview_student(request, student_id):
+    if not request.user.is_authenticated or request.user.role != 'librarian':
+        return redirect('home')
+    student = User.objects.get(id=student_id)
+    book_records = StudentBookRecord.objects.filter(student=student)
+    school_records = SchoolRecord.objects.filter(student=student)
+    context = {
+        'student': student,
+        'book_records': book_records,
+        'school_records': school_records,
+    }
+    return render(request, 'accounts/preview_student.html', context)

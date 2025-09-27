@@ -25,8 +25,17 @@
                                 <td>{{ student.email }}</td>
                                 <td>{{ student.badge|title }}</td>
                                 <td>
-                                    <a href="#" class="btn btn-sm btn-info" onclick="previewStudent('{{ student.id }}')">Preview</a>
-                                    <a href="#" class="btn btn-sm btn-warning" onclick="awardBadge('{{ student.id }}')">Award Badge</a>
+                                    <a href="{% url 'preview_student' student.id %}" class="btn btn-sm btn-info">Preview</a>
+                                    <form method="post" action="{% url 'award_badge' student.id %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <select name="badge" class="form-select form-select-sm" style="display:inline;width:auto;">
+                                            <option value="bronze">Bronze</option>
+                                            <option value="silver">Silver</option>
+                                            <option value="gold">Gold</option>
+                                            <option value="diamond">Diamond</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-sm btn-warning">Award</button>
+                                    </form>
                                 </td>
                             </tr>
                         {% empty %}
