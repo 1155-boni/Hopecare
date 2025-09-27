@@ -12,3 +12,6 @@ def signup(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'accounts/signup.html', {'form': form})
+
+def home(request):
+    return render(request, 'home.html', {'user': request.user})
