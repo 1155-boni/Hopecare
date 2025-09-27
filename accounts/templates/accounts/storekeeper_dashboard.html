@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Storekeeper Dashboard{% endblock %}
+
+{% block content %}
+    <h2>Storekeeper Dashboard</h2>
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Low Stock Alerts</h3>
+            <ul class="list-group">
+                {% for stock in low_stock %}
+                    <li class="list-group-item list-group-item-danger">{{ stock.item.name }} - Quantity: {{ stock.quantity }}</li>
+                {% empty %}
+                    <li class="list-group-item">No low stock items.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h3>Expiring Items</h3>
+            <ul class="list-group">
+                {% for stock in expiring %}
+                    <li class="list-group-item list-group-item-warning">{{ stock.item.name }} - Expiry: {{ stock.item.expiry_date }}</li>
+                {% empty %}
+                    <li class="list-group-item">No expiring items.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>All Stocks</h3>
+            <a href="#" class="btn btn-primary mb-3">Add Stock</a>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Stock In Date</th>
+                            <th>Stock Out Date</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in stocks %}
+                            <tr>
+                                <td>{{ stock.item.name }}</td>
+                                <td>{{ stock.quantity }}</td>
+                                <td>{{ stock.stock_in_date }}</td>
+                                <td>{{ stock.stock_out_date|default:"N/A" }}</td>
+                                <td>{{ stock.notes }}</td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-success">Stock In</a>
+                                    <a href="#" class="btn btn-sm btn-danger">Stock Out</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6">No stocks.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

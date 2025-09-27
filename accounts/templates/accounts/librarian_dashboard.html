@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Librarian Dashboard{% endblock %}
+
+{% block content %}
+    <h2>Librarian Dashboard</h2>
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Students</h3>
+            <input type="text" id="search" placeholder="Search students..." class="form-control mb-3">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Badge</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-table">
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student.get_full_name }}</td>
+                                <td>{{ student.email }}</td>
+                                <td>{{ student.badge|title }}</td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-info" onclick="previewStudent('{{ student.id }}')">Preview</a>
+                                    <a href="#" class="btn btn-sm btn-warning" onclick="awardBadge('{{ student.id }}')">Award Badge</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">No students found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Book Records</h3>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Book</th>
+                            <th>Date Read</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in book_records %}
+                            <tr>
+                                <td>{{ record.student.get_full_name }}</td>
+                                <td>{{ record.book.title }}</td>
+                                <td>{{ record.date_read }}</td>
+                                <td>{{ record.notes }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4">No book records.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Basic search functionality
+        document.getElementById('search').addEventListener('keyup', function() {
+            var input = this.value.toLowerCase();
+            var table = document.getElementById('students-table');
+            var tr = table.getElementsByTagName('tr');
+            for (var i = 1; i < tr.length; i++) {
+                var td = tr[i].getElementsByTagName('td')[0];
+                if (td) {
+                    if (td.innerHTML.toLowerCase().indexOf(input) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        });
+
+        function previewStudent(id) {
+            alert('Preview student ' + id);
+        }
+
+        function awardBadge(id) {
+            var badge = prompt('Award badge (bronze/silver/gold/diamond):');
+            if (badge) {
+                // AJAX call to award badge
+                alert('Awarded ' + badge + ' to student ' + id);
+            }
+        }
+    </script>
+{% endblock %}
