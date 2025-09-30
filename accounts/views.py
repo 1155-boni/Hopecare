@@ -148,6 +148,21 @@ def preview_student(request, student_id):
     return render(request, 'accounts/preview_student.html', context)
 
 @login_required
+def delete_user(request, user_id):
+    if not request.user.is_authenticated or request.user.role != 'admin':
+        return redirect('home')
+    user_to_delete = User.objects.get(id=user_id)
+    if user_to_delete == request.user or user_to_delete.is_superuser:
+        messages.error(request, 'You cannot delete this user.')
+        return redirect('admin_dashboard')
+    if request.method == 'POST':
+        AuditLog.objects.create(user=request.user, action='Delete User', details=f'Deleted user {user_to_delete.email}')
+        user_to_delete.delete()
+        messages.success(request, f'User {user_to_delete.email} has been deleted successfully.')
+        return redirect('admin_dashboard')
+    return redirect('admin_dashboard')
+
+@login_required
 def delete_profile(request):
     if request.method == 'POST':
         AuditLog.objects.create(user=request.user, action='Delete Account', details='User deleted their account')

@@ -14,4 +14,5 @@ urlpatterns = [
     path('admin/', views.admin_dashboard, name='admin_dashboard'),
     path('award-badge/<int:student_id>/', views.award_badge, name='award_badge'),
     path('preview-student/<int:student_id>/', views.preview_student, name='preview_student'),
+    path('delete-user/<int:user_id>/', views.delete_user, name='delete_user'),
 ]
