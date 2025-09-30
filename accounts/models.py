@@ -13,10 +13,10 @@ class User(AbstractUser):
 
     BADGE_CHOICES = [
         ('none', 'None'),
-        ('bronze', 'Bronze'),
-        ('silver', 'Silver'),
-        ('gold', 'Gold'),
-        ('diamond', 'Diamond'),
+        ('bronze', '🥉 Bronze'),
+        ('silver', '🥈 Silver'),
+        ('gold', '🥇 Gold'),
+        ('diamond', '💎 Diamond'),
     ]
     badge = models.CharField(max_length=20, choices=BADGE_CHOICES, default='none')
     profile_picture = CloudinaryField('image', blank=True, null=True)
