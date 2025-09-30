@@ -16,11 +16,13 @@ from accounts.models import User
 
 def create_admin():
     if not User.objects.filter(email='info.hopecarecenter@gmail.com').exists():
-        User.objects.create_superuser(
+        user = User.objects.create_superuser(
             email='info.hopecarecenter@gmail.com',
             username='Hopecare',
             password='hope@care123'
         )
+        user.role = 'admin'
+        user.save()
         print("Admin user created successfully.")
     else:
         print("Admin user already exists.")
