@@ -23,6 +23,8 @@ from inventory.models import Stock
 
 logger = logging.getLogger(__name__)
 
+from .forms import CustomUserCreationForm, UserProfileForm, UserDetailsForm, BroughtByForm
+
 def signup(request):
     step = request.GET.get('step', '1')
 
@@ -37,7 +39,7 @@ def signup(request):
                         return redirect('/accounts/signup/?step=2')
                     else:
                         # For non-student roles, go directly to account creation
-                        return redirect('/accounts/signup/?step=4')
+                        return redirect('/accounts/signup/?step=5')
             return render(request, 'accounts/role_selection.html')
 
         elif step == '2':
@@ -71,10 +73,28 @@ def signup(request):
             return render(request, 'accounts/user_details.html', {'form': form})
 
         elif step == '3':
-            # Account creation for students
+            # Brought by details step (only for students)
             user_details = request.session.get('user_details')
             selected_role = request.session.get('selected_role')
             if not user_details or selected_role != 'student':
+                return redirect('/accounts/signup/?step=1')
+
+            if request.method == 'POST':
+                form = BroughtByForm(request.POST)
+                if form.is_valid():
+                    brought_by_data = form.cleaned_data
+                    request.session['brought_by'] = brought_by_data
+                    return redirect('/accounts/signup/?step=4')
+            else:
+                form = BroughtByForm()
+            return render(request, 'accounts/brought_by.html', {'form': form})
+
+        elif step == '4':
+            # Account creation for students
+            user_details = request.session.get('user_details')
+            brought_by_data = request.session.get('brought_by')
+            selected_role = request.session.get('selected_role')
+            if not user_details or not brought_by_data or selected_role != 'student':
                 return redirect('/accounts/signup/?step=1')
 
             if request.method == 'POST':
@@ -90,8 +110,20 @@ def signup(request):
                     user.admission_number = user_details['admission_number']
                     user.role = selected_role
                     user.save()
+                    # Save brought_by data
+                    from .models import BroughtBy
+                    BroughtBy.objects.create(
+                        user=user,
+                        id_number=brought_by_data.get('id_number'),
+                        phone_number=brought_by_data.get('phone_number'),
+                        first_name=brought_by_data.get('first_name'),
+                        middle_name=brought_by_data.get('middle_name'),
+                        last_name=brought_by_data.get('last_name'),
+                        relationship=brought_by_data.get('relationship'),
+                    )
                     # Clear session data
                     del request.session['user_details']
+                    del request.session['brought_by']
                     del request.session['selected_role']
                     login(request, user)
                     return redirect('home')
@@ -99,7 +131,7 @@ def signup(request):
                 form = CustomUserCreationForm()
             return render(request, 'accounts/signup.html', {'form': form})
 
-        elif step == '4':
+        elif step == '5':
             # Account creation for non-student roles
             selected_role = request.session.get('selected_role')
             if not selected_role or selected_role == 'student':

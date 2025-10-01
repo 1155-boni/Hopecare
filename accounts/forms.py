@@ -4,6 +4,8 @@ from .models import User
 from PIL import Image
 import io
 
+from .models import BroughtBy
+
 class UserDetailsForm(forms.ModelForm):
     class Meta:
         model = User
@@ -16,6 +18,19 @@ class UserDetailsForm(forms.ModelForm):
             'middle_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
             'admission_number': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+        }
+
+class BroughtByForm(forms.ModelForm):
+    class Meta:
+        model = BroughtBy
+        fields = ['id_number', 'phone_number', 'first_name', 'middle_name', 'last_name', 'relationship']
+        widgets = {
+            'id_number': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'phone_number': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'middle_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'relationship': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
         }
 
 class CustomUserCreationForm(UserCreationForm):

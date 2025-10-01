@@ -25,6 +25,18 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.email} ({self.role})"
 
+class BroughtBy(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='brought_by')
+    id_number = models.CharField(max_length=20, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    first_name = models.CharField(max_length=30, blank=True, null=True)
+    middle_name = models.CharField(max_length=30, blank=True, null=True)
+    last_name = models.CharField(max_length=30, blank=True, null=True)
+    relationship = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return f"Brought by {self.first_name} {self.last_name} for {self.user.email}"
+
 class AuditLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     action = models.CharField(max_length=200)
