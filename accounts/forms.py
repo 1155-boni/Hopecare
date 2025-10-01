@@ -9,7 +9,7 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'role', 'password1', 'password2')
+        fields = ('email', 'first_name', 'last_name', 'role', 'password1', 'password2')
 
 class UserProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):

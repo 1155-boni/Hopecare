@@ -10,19 +10,13 @@ class User(AbstractUser):
         ('admin', 'Admin'),
     ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
-
-    BADGE_CHOICES = [
-        ('none', 'None'),
-        ('bronze', '🥉 Bronze'),
-        ('silver', '🥈 Silver'),
-        ('gold', '🥇 Gold'),
-        ('diamond', '💎 Diamond'),
-    ]
-    badge = models.CharField(max_length=20, choices=BADGE_CHOICES, default='none')
     profile_picture = CloudinaryField('image', blank=True, null=True)
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name']
+
     def __str__(self):
-        return f"{self.username} ({self.role})"
+        return f"{self.email} ({self.role})"
 
 class AuditLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -31,4 +25,4 @@ class AuditLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} - {self.action} - {self.timestamp}"
+        return f"{self.user.email} - {self.action} - {self.timestamp}"

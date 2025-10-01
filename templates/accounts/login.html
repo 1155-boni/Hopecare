@@ -23,10 +23,10 @@
                     <form method="post">
                         {% csrf_token %}
                         <div class="mb-4">
-                            <label for="username" class="form-label fw-bold">
-                                <i class="bi bi-person me-1"></i>Username
+                            <label for="email" class="form-label fw-bold">
+                                <i class="bi bi-envelope me-1"></i>Email
                             </label>
-                            <input type="text" class="form-control form-control-lg rounded-pill" name="username" id="username" placeholder="Enter your username" required>
+                            <input type="email" class="form-control form-control-lg rounded-pill" name="email" id="email" placeholder="Enter your email" required>
                         </div>
                         <div class="mb-4">
                             <label for="password" class="form-label fw-bold">
@@ -37,7 +37,7 @@
                         {% if form.errors %}
                             <div class="alert alert-danger rounded-3">
                                 <i class="bi bi-exclamation-triangle me-2"></i>
-                                <strong>Login Failed:</strong> Please check your username and password.
+                                <strong>Login Failed:</strong> Please check your email and password.
                             </div>
                         {% endif %}
                         <div class="d-grid">
