@@ -33,7 +33,6 @@
                                     <tr>
                                         <th><i class="bi bi-person me-1"></i>Name</th>
                                         <th><i class="bi bi-envelope me-1"></i>Email</th>
-                                        <th><i class="bi bi-award me-1"></i>Badge</th>
                                         <th><i class="bi bi-gear me-1"></i>Actions</th>
                                     </tr>
                                 </thead>
@@ -45,35 +44,14 @@
                                             </td>
                                             <td>{{ student.email }}</td>
                                             <td>
-                                                <span class="badge bg-{% if student.badge == 'bronze' %}warning{% elif student.badge == 'silver' %}secondary{% elif student.badge == 'gold' %}warning{% elif student.badge == 'diamond' %}info{% else %}light text-dark{% endif %}">
-                                                    {{ student.badge|title|default:"None" }}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <div class="btn-group" role="group">
-                                                    <a href="{% url 'preview_student' student.id %}" class="btn btn-outline-info btn-sm rounded-pill">
-                                                        <i class="bi bi-eye"></i> Preview
-                                                    </a>
-                                                    <form method="post" action="{% url 'award_badge' student.id %}" class="d-inline ms-2">
-                                                        {% csrf_token %}
-                                                        <div class="input-group input-group-sm" style="width: auto;">
-                                                            <select name="badge" class="form-select rounded-pill">
-                                                                <option value="bronze">Bronze</option>
-                                                                <option value="silver">Silver</option>
-                                                                <option value="gold">Gold</option>
-                                                                <option value="diamond">Diamond</option>
-                                                            </select>
-                                                            <button type="submit" class="btn btn-warning btn-sm rounded-pill">
-                                                                <i class="bi bi-trophy"></i> Award
-                                                            </button>
-                                                        </div>
-                                                    </form>
-                                                </div>
+                                                <a href="{% url 'preview_student' student.id %}" class="btn btn-outline-info btn-sm rounded-pill">
+                                                    <i class="bi bi-eye"></i> Preview
+                                                </a>
                                             </td>
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                            <td colspan="4" class="text-center py-4">
+                                            <td colspan="3" class="text-center py-4">
                                                 <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
                                                 <p class="text-muted mt-3">No students found.</p>
                                             </td>
