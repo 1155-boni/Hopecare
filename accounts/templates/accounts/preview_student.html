@@ -12,7 +12,6 @@
                         <h5 class="card-title">Profile Information</h5>
                         <p><strong>Email:</strong> {{ student.email }}</p>
                         <p><strong>Role:</strong> {{ student.role|title }}</p>
-                        <p><strong>Badge:</strong> {{ student.badge|title }}</p>
                         {% if student.profile_picture %}
                             <img src="{{ student.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail" style="width: 150px;">
                         {% else %}
