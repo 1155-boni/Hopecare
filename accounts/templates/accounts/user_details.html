@@ -49,6 +49,13 @@
                             {% endif %}
                         </div>
                         <div class="mb-3">
+                            <label for="{{ form.time_of_admission.id_for_label }}" class="form-label">Time of Admission</label>
+                            {{ form.time_of_admission }}
+                            {% if form.time_of_admission.errors %}
+                                <div class="text-danger">{{ form.time_of_admission.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
                             <label for="{{ form.admission_number.id_for_label }}" class="form-label">Admission Number</label>
                             {{ form.admission_number }}
                             {% if form.admission_number.errors %}

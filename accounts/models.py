@@ -14,6 +14,7 @@ class User(AbstractUser):
     middle_name = models.CharField(max_length=30, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     date_of_admission = models.DateField(blank=True, null=True)
+    time_of_admission = models.TimeField(blank=True, null=True)
     admission_number = models.CharField(max_length=20, blank=True, null=True)
 
     email = models.EmailField(unique=True)
