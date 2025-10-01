@@ -15,19 +15,18 @@ class UserProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-        if user and user.role not in ['librarian', 'admin']:
+        # Remove badge field since it no longer exists in User model
+        if 'badge' in self.fields:
             self.fields.pop('badge', None)
 
         # Add Bootstrap classes
         self.fields['first_name'].widget.attrs.update({'class': 'form-control form-control-lg rounded-pill'})
         self.fields['last_name'].widget.attrs.update({'class': 'form-control form-control-lg rounded-pill'})
         self.fields['profile_picture'].widget.attrs.update({'class': 'form-control form-control-lg'})
-        if 'badge' in self.fields:
-            self.fields['badge'].widget.attrs.update({'class': 'form-select form-select-lg rounded-pill'})
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'profile_picture', 'badge']
+        fields = ['first_name', 'last_name', 'profile_picture']
 
     def clean_profile_picture(self):
         profile_picture = self.cleaned_data.get('profile_picture')
