@@ -34,17 +34,17 @@ def signup(request):
                 if selected_role:
                     request.session['selected_role'] = selected_role
                     if selected_role == 'student':
-                        return redirect('signup?step=2')
+                        return redirect('/accounts/signup/?step=2')
                     else:
                         # For non-student roles, go directly to account creation
-                        return redirect('signup?step=4')
+                        return redirect('/accounts/signup/?step=4')
             return render(request, 'accounts/role_selection.html')
 
         elif step == '2':
             # User details step (only for students)
             selected_role = request.session.get('selected_role')
             if not selected_role or selected_role != 'student':
-                return redirect('signup?step=1')
+                return redirect('/accounts/signup/?step=1')
 
             if request.method == 'POST':
                 form = UserDetailsForm(request.POST)
@@ -65,7 +65,7 @@ def signup(request):
                     if user_details['date_of_admission']:
                         user_details['date_of_admission'] = datetime.fromisoformat(user_details['date_of_admission']).date()
                     request.session['user_details'] = user_details
-                    return redirect('signup?step=3')
+                    return redirect('/accounts/signup/?step=3')
             else:
                 form = UserDetailsForm()
             return render(request, 'accounts/user_details.html', {'form': form})
@@ -75,7 +75,7 @@ def signup(request):
             user_details = request.session.get('user_details')
             selected_role = request.session.get('selected_role')
             if not user_details or selected_role != 'student':
-                return redirect('signup?step=1')
+                return redirect('/accounts/signup/?step=1')
 
             if request.method == 'POST':
                 form = CustomUserCreationForm(request.POST)
@@ -103,7 +103,7 @@ def signup(request):
             # Account creation for non-student roles
             selected_role = request.session.get('selected_role')
             if not selected_role or selected_role == 'student':
-                return redirect('signup?step=1')
+                return redirect('/accounts/signup/?step=1')
 
             if request.method == 'POST':
                 form = CustomUserCreationForm(request.POST)
@@ -121,7 +121,7 @@ def signup(request):
     except Exception as e:
         logger.error(f"Error in signup view step {step}: {e}", exc_info=True)
         messages.error(request, "An unexpected error occurred. Please try again.")
-        return redirect('signup?step=1')
+        return redirect('/accounts/signup/?step=1')
 
 def login_view(request):
     if request.method == 'POST':
