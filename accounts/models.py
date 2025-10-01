@@ -11,6 +11,10 @@ class User(AbstractUser):
     ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
     profile_picture = CloudinaryField('image', blank=True, null=True)
+    middle_name = models.CharField(max_length=30, blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    date_of_admission = models.DateField(blank=True, null=True)
+    admission_number = models.CharField(max_length=20, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']

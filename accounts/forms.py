@@ -4,6 +4,19 @@ from .models import User
 from PIL import Image
 import io
 
+class UserDetailsForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'middle_name', 'last_name', 'date_of_birth', 'date_of_admission', 'admission_number']
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-lg rounded-pill'}),
+            'date_of_admission': forms.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-lg rounded-pill'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'middle_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'admission_number': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+        }
+
 class CustomUserCreationForm(UserCreationForm):
     role = forms.ChoiceField(choices=[('student', 'Student'), ('librarian', 'Librarian'), ('storekeeper', 'Storekeeper')])
 

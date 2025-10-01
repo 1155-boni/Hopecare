@@ -4,21 +4,56 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
-from .forms import CustomUserCreationForm, UserProfileForm
+from .forms import CustomUserCreationForm, UserProfileForm, UserDetailsForm
 from .models import User, AuditLog
 from library.models import StudentBookRecord, SchoolRecord
 from inventory.models import Stock
 
 def signup(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('home')  # Redirect to home or dashboard
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'accounts/signup.html', {'form': form})
+    step = request.GET.get('step', '1')
+
+    if step == '1':
+        if request.method == 'POST':
+            form = UserDetailsForm(request.POST)
+            if form.is_valid():
+                # Store user details in session
+                request.session['user_details'] = {
+                    'first_name': form.cleaned_data['first_name'],
+                    'middle_name': form.cleaned_data['middle_name'],
+                    'last_name': form.cleaned_data['last_name'],
+                    'date_of_birth': form.cleaned_data['date_of_birth'].isoformat() if form.cleaned_data['date_of_birth'] else None,
+                    'date_of_admission': form.cleaned_data['date_of_admission'].isoformat() if form.cleaned_data['date_of_admission'] else None,
+                    'admission_number': form.cleaned_data['admission_number'],
+                }
+                return redirect('signup?step=2')
+        else:
+            form = UserDetailsForm()
+        return render(request, 'accounts/user_details.html', {'form': form})
+
+    elif step == '2':
+        user_details = request.session.get('user_details')
+        if not user_details:
+            return redirect('signup?step=1')
+
+        if request.method == 'POST':
+            form = CustomUserCreationForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                # Set the user details from session
+                user.first_name = user_details['first_name']
+                user.middle_name = user_details['middle_name']
+                user.last_name = user_details['last_name']
+                user.date_of_birth = user_details['date_of_birth']
+                user.date_of_admission = user_details['date_of_admission']
+                user.admission_number = user_details['admission_number']
+                user.save()
+                # Clear session data
+                del request.session['user_details']
+                login(request, user)
+                return redirect('home')
+        else:
+            form = CustomUserCreationForm()
+        return render(request, 'accounts/signup.html', {'form': form})
 
 def login_view(request):
     if request.method == 'POST':
