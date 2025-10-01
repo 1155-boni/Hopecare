@@ -13,6 +13,24 @@ def signup(request):
     step = request.GET.get('step', '1')
 
     if step == '1':
+        # Role selection step
+        if request.method == 'POST':
+            selected_role = request.POST.get('role')
+            if selected_role:
+                request.session['selected_role'] = selected_role
+                if selected_role == 'student':
+                    return redirect('signup?step=2')
+                else:
+                    # For non-student roles, go directly to account creation
+                    return redirect('signup?step=4')
+        return render(request, 'accounts/role_selection.html')
+
+    elif step == '2':
+        # User details step (only for students)
+        selected_role = request.session.get('selected_role')
+        if not selected_role or selected_role != 'student':
+            return redirect('signup?step=1')
+
         if request.method == 'POST':
             form = UserDetailsForm(request.POST)
             if form.is_valid():
@@ -25,14 +43,16 @@ def signup(request):
                     'date_of_admission': form.cleaned_data['date_of_admission'].isoformat() if form.cleaned_data['date_of_admission'] else None,
                     'admission_number': form.cleaned_data['admission_number'],
                 }
-                return redirect('signup?step=2')
+                return redirect('signup?step=3')
         else:
             form = UserDetailsForm()
         return render(request, 'accounts/user_details.html', {'form': form})
 
-    elif step == '2':
+    elif step == '3':
+        # Account creation for students
         user_details = request.session.get('user_details')
-        if not user_details:
+        selected_role = request.session.get('selected_role')
+        if not user_details or selected_role != 'student':
             return redirect('signup?step=1')
 
         if request.method == 'POST':
@@ -46,9 +66,31 @@ def signup(request):
                 user.date_of_birth = user_details['date_of_birth']
                 user.date_of_admission = user_details['date_of_admission']
                 user.admission_number = user_details['admission_number']
+                user.role = selected_role
                 user.save()
                 # Clear session data
                 del request.session['user_details']
+                del request.session['selected_role']
+                login(request, user)
+                return redirect('home')
+        else:
+            form = CustomUserCreationForm()
+        return render(request, 'accounts/signup.html', {'form': form})
+
+    elif step == '4':
+        # Account creation for non-student roles
+        selected_role = request.session.get('selected_role')
+        if not selected_role or selected_role == 'student':
+            return redirect('signup?step=1')
+
+        if request.method == 'POST':
+            form = CustomUserCreationForm(request.POST)
+            if form.is_valid():
+                user = form.save(commit=False)
+                user.role = selected_role
+                user.save()
+                # Clear session data
+                del request.session['selected_role']
                 login(request, user)
                 return redirect('home')
         else:

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Choose Your Role - Signup{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">Choose Your Role</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">Please select your role to continue with the registration process.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Select Role</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="student" value="student" checked>
+                                        <label class="form-check-label" for="student">
+                                            <i class="bi bi-mortarboard me-2"></i>Student
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="librarian" value="librarian">
+                                        <label class="form-check-label" for="librarian">
+                                            <i class="bi bi-book me-2"></i>Librarian
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="storekeeper" value="storekeeper">
+                                        <label class="form-check-label" for="storekeeper">
+                                            <i class="bi bi-box-seam me-2"></i>Storekeeper
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="role" id="admin" value="admin">
+                                        <label class="form-check-label" for="admin">
+                                            <i class="bi bi-shield-check me-2"></i>Admin
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">Continue</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
