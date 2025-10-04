@@ -12,7 +12,6 @@ class User(AbstractUser):
     GENDER_CHOICES = [
         ('male', 'Male'),
         ('female', 'Female'),
-        ('other', 'Other'),
     ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
     profile_picture = CloudinaryField('image', blank=True, null=True)
