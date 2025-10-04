@@ -3,155 +3,97 @@
 {% block title %}User Details - Signup{% endblock %}
 
 {% block content %}
-<style>
-  .registration-container {
-    max-width: 500px;
-    margin: 40px auto;
-    padding: 30px 40px;
-    background: #f9fdf9;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  }
-  .registration-header {
-    text-align: center;
-    margin-bottom: 25px;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #2a7a2a;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-  }
-  form label {
-    font-weight: 500;
-    font-size: 0.9rem;
-    color: #333;
-  }
-  form input[type="text"],
-  form input[type="email"],
-  form input[type="date"],
-  form select {
-    width: 100%;
-    padding: 10px 14px;
-    margin-top: 6px;
-    margin-bottom: 18px;
-    border: 1.5px solid #ccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    color: #555;
-    transition: border-color 0.3s ease;
-  }
-  form input[type="text"]::placeholder,
-  form input[type="email"]::placeholder {
-    font-style: italic;
-    color: #999;
-  }
-  form input[type="text"]:focus,
-  form input[type="email"]:focus,
-  form input[type="date"]:focus,
-  form select:focus {
-    border-color: #2a7a2a;
-    outline: none;
-  }
-  .form-row {
-    display: flex;
-    gap: 15px;
-  }
-  .form-row > div {
-    flex: 1;
-  }
-  button.btn-primary {
-    background-color: #2a7a2a;
-    border: none;
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    color: white;
-    font-weight: 600;
-  }
-  button.btn-primary:hover {
-    background-color: #1f5c1f;
-  }
-  a.btn-outline-secondary {
-    padding: 12px 25px;
-    font-size: 1.1rem;
-    border-radius: 8px;
-    border: 2px solid #2a7a2a;
-    color: #2a7a2a;
-    font-weight: 600;
-    text-decoration: none;
-    display: inline-block;
-    text-align: center;
-  }
-  a.btn-outline-secondary:hover {
-    background-color: #2a7a2a;
-    color: white;
-  }
-</style>
-
-<div class="registration-container">
-  <div class="registration-header">Online Registration</div>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    <div class="form-row">
-      <div>
-        <label for="{{ form.first_name.id_for_label }}">First Name</label>
-        {{ form.first_name }}
-        {% if form.first_name.errors %}
-          <div class="text-danger">{{ form.first_name.errors }}</div>
-        {% endif %}
-      </div>
-      <div>
-        <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-        {{ form.last_name }}
-        {% if form.last_name.errors %}
-          <div class="text-danger">{{ form.last_name.errors }}</div>
-        {% endif %}
-      </div>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">User Details</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                                <div class="text-danger">{{ form.first_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.middle_name.id_for_label }}" class="form-label">Middle Name (Optional)</label>
+                            {{ form.middle_name }}
+                            {% if form.middle_name.errors %}
+                                <div class="text-danger">{{ form.middle_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                                <div class="text-danger">{{ form.last_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Date of Birth</label>
+                            {{ form.date_of_birth }}
+                            {% if form.date_of_birth.errors %}
+                                <div class="text-danger">{{ form.date_of_birth.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.gender.id_for_label }}" class="form-label">Gender</label>
+                            {{ form.gender }}
+                            {% if form.gender.errors %}
+                                <div class="text-danger">{{ form.gender.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.school_name.id_for_label }}" class="form-label">School Name</label>
+                            {{ form.school_name }}
+                            {% if form.school_name.errors %}
+                                <div class="text-danger">{{ form.school_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.student_class.id_for_label }}" class="form-label">Class</label>
+                            {{ form.student_class }}
+                            {% if form.student_class.errors %}
+                                <div class="text-danger">{{ form.student_class.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.date_of_admission.id_for_label }}" class="form-label">Date of Admission</label>
+                            {{ form.date_of_admission }}
+                            {% if form.date_of_admission.errors %}
+                                <div class="text-danger">{{ form.date_of_admission.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.time_of_admission.id_for_label }}" class="form-label">Time of Admission</label>
+                            {{ form.time_of_admission }}
+                            {% if form.time_of_admission.errors %}
+                                <div class="text-danger">{{ form.time_of_admission.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.admission_number.id_for_label }}" class="form-label">Admission Number</label>
+                            {{ form.admission_number }}
+                            {% if form.admission_number.errors %}
+                                <div class="text-danger">{{ form.admission_number.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'signup' %}?step=1" class="btn btn-outline-secondary btn-lg">
+                                <i class="bi bi-arrow-left me-2"></i>Back
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">Next</button>
+                        </div>
+                    </form>
+                    <div class="mt-3 text-danger fw-bold" id="debug-info"></div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <label for="{{ form.email.id_for_label }}">Email Address</label>
-    {{ form.email }}
-    {% if form.email.errors %}
-      <div class="text-danger">{{ form.email.errors }}</div>
-    {% endif %}
-
-    <label for="{{ form.school_name.id_for_label }}">Company (if applicable)</label>
-    {{ form.school_name }}
-    {% if form.school_name.errors %}
-      <div class="text-danger">{{ form.school_name.errors }}</div>
-    {% endif %}
-
-    <label for="{{ form.student_class.id_for_label }}">Physical Address</label>
-    {{ form.student_class }}
-    {% if form.student_class.errors %}
-      <div class="text-danger">{{ form.student_class.errors }}</div>
-    {% endif %}
-
-    <label>Date of Birth</label>
-    <div class="form-row">
-      <div>
-        {{ form.date_of_birth.month }}
-      </div>
-      <div>
-        {{ form.date_of_birth.day }}
-      </div>
-      <div>
-        {{ form.date_of_birth.year }}
-      </div>
-    </div>
-    {% if form.date_of_birth.errors %}
-      <div class="text-danger">{{ form.date_of_birth.errors }}</div>
-    {% endif %}
-
-    <div class="d-flex justify-content-between mt-4">
-      <a href="{% url 'signup' %}?step=1" class="btn btn-outline-secondary btn-lg">
-        Back
-      </a>
-      <button type="submit" class="btn btn-primary btn-lg">Next</button>
-    </div>
-  </form>
 </div>
 {% endblock %}
