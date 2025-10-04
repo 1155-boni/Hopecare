@@ -23,7 +23,7 @@ from inventory.models import Stock
 
 logger = logging.getLogger(__name__)
 
-from .forms import CustomUserCreationForm, UserProfileForm, UserDetailsForm
+from .forms import CustomUserCreationForm, UserProfileForm, UserDetailsForm, BroughtByForm
 
 def signup(request):
     step = request.GET.get('step', '1')
