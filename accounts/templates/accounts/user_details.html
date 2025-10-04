@@ -3,14 +3,14 @@
 {% block title %}User Details - Signup{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
+<div class="container mt-5" style="overflow: hidden; height: 100vh;">
+    <div class="row justify-content-center" style="height: 100%;">
+        <div class="col-md-6" style="height: 100%; overflow-y: auto;">
+            <div class="card shadow" style="height: 100%;">
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title mb-0">User Details</h3>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="overflow-y: auto;">
                     <form method="post">
                         {% csrf_token %}
                         <div class="mb-3">
