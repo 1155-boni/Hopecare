@@ -91,8 +91,37 @@ def signup(request):
                 form = BroughtByForm(request.POST)
                 if form.is_valid():
                     brought_by_data = form.cleaned_data
-                    request.session['brought_by'] = brought_by_data
-                    return redirect('/accounts/signup/?step=4')
+                    # Create the user account
+                    user = User.objects.create_user(
+                        email=brought_by_data['email'],
+                        password=brought_by_data['password1'],
+                        first_name=user_details['first_name'],
+                        middle_name=user_details['middle_name'],
+                        last_name=user_details['last_name'],
+                        date_of_birth=user_details['date_of_birth'],
+                        gender=user_details['gender'],
+                        school_name=user_details['school_name'],
+                        student_class=user_details['student_class'],
+                        date_of_admission=user_details['date_of_admission'],
+                        time_of_admission=user_details['time_of_admission'],
+                        admission_number=user_details['admission_number'],
+                        role=selected_role
+                    )
+                    # Save brought_by data
+                    BroughtBy.objects.create(
+                        user=user,
+                        id_number=brought_by_data.get('id_number'),
+                        phone_number=brought_by_data.get('phone_number'),
+                        first_name=brought_by_data.get('first_name'),
+                        middle_name=brought_by_data.get('middle_name'),
+                        last_name=brought_by_data.get('last_name'),
+                        relationship=brought_by_data.get('relationship'),
+                    )
+                    # Clear session data
+                    del request.session['user_details']
+                    del request.session['selected_role']
+                    login(request, user)
+                    return redirect('home')
             else:
                 form = BroughtByForm()
             return render(request, 'accounts/brought_by.html', {'form': form, 'step_name': 'Brought By'})

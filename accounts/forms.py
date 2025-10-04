@@ -7,6 +7,11 @@ import io
 from .models import BroughtBy
 
 class UserDetailsForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].required = True
+
     class Meta:
         model = User
         fields = ['first_name', 'middle_name', 'last_name', 'date_of_birth', 'gender', 'school_name', 'student_class', 'date_of_admission', 'time_of_admission', 'admission_number']
@@ -24,6 +29,16 @@ class UserDetailsForm(forms.ModelForm):
         }
 
 class BroughtByForm(forms.ModelForm):
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control form-control-lg rounded-pill'}))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control form-control-lg rounded-pill'}))
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control form-control-lg rounded-pill'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            if field not in ['email', 'password1', 'password2']:
+                self.fields[field].required = True
+
     class Meta:
         model = BroughtBy
         fields = ['id_number', 'phone_number', 'first_name', 'middle_name', 'last_name', 'relationship']
@@ -35,6 +50,14 @@ class BroughtByForm(forms.ModelForm):
             'last_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
             'relationship': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError('Passwords do not match.')
+        return cleaned_data
 
 class CustomUserCreationForm(UserCreationForm):
     role = forms.ChoiceField(choices=[('student', 'Student'), ('librarian', 'Librarian'), ('storekeeper', 'Storekeeper')])
