@@ -9,10 +9,18 @@ class User(AbstractUser):
         ('storekeeper', 'Storekeeper'),
         ('admin', 'Admin'),
     ]
+    GENDER_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),
+        ('other', 'Other'),
+    ]
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='student')
     profile_picture = CloudinaryField('image', blank=True, null=True)
     middle_name = models.CharField(max_length=30, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, blank=True, null=True)
+    school_name = models.CharField(max_length=100, blank=True, null=True)
+    student_class = models.CharField(max_length=20, blank=True, null=True)
     date_of_admission = models.DateField(blank=True, null=True)
     time_of_admission = models.TimeField(blank=True, null=True)
     admission_number = models.CharField(max_length=20, blank=True, null=True)

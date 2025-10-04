@@ -64,6 +64,9 @@ def signup(request):
                         'middle_name': form.cleaned_data['middle_name'],
                         'last_name': form.cleaned_data['last_name'],
                         'date_of_birth': form.cleaned_data['date_of_birth'].strftime('%Y-%m-%d') if form.cleaned_data['date_of_birth'] else None,
+                        'gender': form.cleaned_data['gender'],
+                        'school_name': form.cleaned_data['school_name'],
+                        'student_class': form.cleaned_data['student_class'],
                         'date_of_admission': form.cleaned_data['date_of_admission'].strftime('%Y-%m-%d') if form.cleaned_data['date_of_admission'] else None,
                         'time_of_admission': form.cleaned_data['time_of_admission'].strftime('%H:%M:%S') if form.cleaned_data['time_of_admission'] else None,
                         'admission_number': form.cleaned_data['admission_number'],
@@ -111,6 +114,9 @@ def signup(request):
                     user.middle_name = user_details['middle_name']
                     user.last_name = user_details['last_name']
                     user.date_of_birth = user_details['date_of_birth']
+                    user.gender = user_details['gender']
+                    user.school_name = user_details['school_name']
+                    user.student_class = user_details['student_class']
                     user.date_of_admission = user_details['date_of_admission']
                     user.admission_number = user_details['admission_number']
                     user.role = selected_role

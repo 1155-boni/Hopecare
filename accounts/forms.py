@@ -9,9 +9,12 @@ from .models import BroughtBy
 class UserDetailsForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'middle_name', 'last_name', 'date_of_birth', 'date_of_admission', 'time_of_admission', 'admission_number']
+        fields = ['first_name', 'middle_name', 'last_name', 'date_of_birth', 'gender', 'school_name', 'student_class', 'date_of_admission', 'time_of_admission', 'admission_number']
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-lg rounded-pill'}),
+            'gender': forms.Select(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'school_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'student_class': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
             'date_of_admission': forms.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-lg rounded-pill'}),
             'time_of_admission': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control form-control-lg rounded-pill'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
