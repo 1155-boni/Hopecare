@@ -122,7 +122,7 @@ def signup(request):
                     del request.session['user_details']
                     del request.session['selected_role']
                     login(request, user)
-                    return redirect('home')
+                    return redirect('student_dashboard')
             else:
                 form = BroughtByForm()
             return render(request, 'accounts/brought_by.html', {'form': form, 'step_name': 'Brought By'})
@@ -187,7 +187,15 @@ def signup(request):
                     # Clear session data
                     del request.session['selected_role']
                     login(request, user)
-                    return redirect('home')
+                    # Redirect to the appropriate dashboard based on role
+                    if selected_role == 'librarian':
+                        return redirect('librarian_dashboard')
+                    elif selected_role == 'storekeeper':
+                        return redirect('storekeeper_dashboard')
+                    elif selected_role == 'admin':
+                        return redirect('admin_dashboard')
+                    else:
+                        return redirect('home')
             else:
                 form = CustomUserCreationForm()
             return render(request, 'accounts/signup.html', {'form': form})
