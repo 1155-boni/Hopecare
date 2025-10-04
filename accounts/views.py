@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
+from django.db.models import Q
 from .forms import CustomUserCreationForm, UserProfileForm, UserDetailsForm
 from .models import User, AuditLog
 from library.models import StudentBookRecord, SchoolRecord
@@ -197,15 +198,25 @@ def signup(request):
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-        user = authenticate(request, email=email, password=password)
+        name = request.POST.get('name')
+        password = request.POST.get('password')
+        user = None
+        if name and password:
+            # Try to find user by first_name, middle_name, or last_name (case-insensitive)
+            try:
+                user = User.objects.get(
+                    Q(first_name__iexact=name) | Q(middle_name__iexact=name) | Q(last_name__iexact=name)
+                )
+                if not user.check_password(password):
+                    user = None
+            except User.DoesNotExist:
+                user = None
         if user is not None:
             login(request, user)
             AuditLog.objects.create(user=user, action='Login', details='User logged in')
             return redirect('home')
         else:
-            messages.error(request, 'Invalid email or password.')
+            messages.error(request, 'Invalid name or password.')
     return render(request, 'accounts/login.html')
 
 def logout_view(request):
