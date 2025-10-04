@@ -29,51 +29,56 @@ def signup(request):
     step = request.GET.get('step', '1')
 
     try:
+        logger.debug(f"Signup view called with step: {step}")
         if step == '1':
             # Role selection step
             if request.method == 'POST':
                 selected_role = request.POST.get('role')
+                logger.debug(f"Selected role: {selected_role}")
                 if selected_role:
                     request.session['selected_role'] = selected_role
                     if selected_role == 'student':
+                        logger.debug("Redirecting to step 2 for student")
                         return redirect('/accounts/signup/?step=2')
                     else:
                         # For non-student roles, go directly to account creation
+                        logger.debug("Redirecting to step 5 for non-student")
                         return redirect('/accounts/signup/?step=5')
             return render(request, 'accounts/role_selection.html')
 
         elif step == '2':
             # User details step (only for students)
             selected_role = request.session.get('selected_role')
+            logger.debug(f"Session selected_role: {selected_role}")
             if not selected_role or selected_role != 'student':
+                logger.debug("Redirecting to step 1 due to missing or invalid role")
                 return redirect('/accounts/signup/?step=1')
 
             if request.method == 'POST':
                 form = UserDetailsForm(request.POST)
                 if form.is_valid():
+                    logger.debug("UserDetailsForm is valid")
                     # Store user details in session
                     user_details = {
                         'first_name': form.cleaned_data['first_name'],
                         'middle_name': form.cleaned_data['middle_name'],
                         'last_name': form.cleaned_data['last_name'],
-                        'date_of_birth': form.cleaned_data['date_of_birth'].isoformat() if form.cleaned_data['date_of_birth'] else None,
-                        'date_of_admission': form.cleaned_data['date_of_admission'].isoformat() if form.cleaned_data['date_of_admission'] else None,
+                        'date_of_birth': form.cleaned_data['date_of_birth'].strftime('%Y-%m-%d') if form.cleaned_data['date_of_birth'] else None,
+                        'date_of_admission': form.cleaned_data['date_of_admission'].strftime('%Y-%m-%d') if form.cleaned_data['date_of_admission'] else None,
+                        'time_of_admission': form.cleaned_data['time_of_admission'].strftime('%H:%M:%S') if form.cleaned_data['time_of_admission'] else None,
                         'admission_number': form.cleaned_data['admission_number'],
                     }
-                    # Convert date strings back to date objects for session storage
-                    from datetime import datetime
-                    if user_details['date_of_birth']:
-                        user_details['date_of_birth'] = datetime.fromisoformat(user_details['date_of_birth']).date()
-                    if user_details['date_of_admission']:
-                        user_details['date_of_admission'] = datetime.fromisoformat(user_details['date_of_admission']).date()
                     request.session['user_details'] = user_details
+                    logger.debug(f"User details stored in session: {user_details}")
                     return redirect('/accounts/signup/?step=3')
+                else:
+                    logger.debug(f"UserDetailsForm errors: {form.errors}")
             else:
                 form = UserDetailsForm()
             return render(request, 'accounts/user_details.html', {'form': form})
 
         elif step == '3':
-            # Brought by details step (only for students)
+            # Write Brought By details step (only for students)
             user_details = request.session.get('user_details')
             selected_role = request.session.get('selected_role')
             if not user_details or selected_role != 'student':
@@ -87,7 +92,7 @@ def signup(request):
                     return redirect('/accounts/signup/?step=4')
             else:
                 form = BroughtByForm()
-            return render(request, 'accounts/brought_by.html', {'form': form})
+            return render(request, 'accounts/brought_by.html', {'form': form, 'step_name': 'Brought By'})
 
         elif step == '4':
             # Account creation for students
