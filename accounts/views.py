@@ -94,8 +94,8 @@ def signup(request):
                     brought_by_data = form.cleaned_data
                     # Create the user account
                     user = User.objects.create_user(
-                        email=brought_by_data['email'],
-                        password=brought_by_data['password1'],
+                        brought_by_data['email'],
+                        brought_by_data['password1'],
                         first_name=user_details['first_name'],
                         middle_name=user_details['middle_name'],
                         last_name=user_details['last_name'],
