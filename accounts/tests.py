@@ -2,7 +2,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.test import Client
-from .models import AuditLog
+from .models import AuditLog, BroughtBy, MedicalRecord
+from library.models import StudentBookRecord, SchoolRecord
 
 User = get_user_model()
 
@@ -40,3 +41,63 @@ class AccountsTests(TestCase):
         user = User.objects.create_user(username='audituser', password='pass', role='student')
         audit = AuditLog.objects.create(user=user, action='test_action', details='test details')
         self.assertEqual(audit.action, 'test_action')
+
+    def test_profile_view_get(self):
+        user = User.objects.create_user(username='testuser', password='testpass123', role='student', first_name='Test')
+        # Login using the login view (which uses first_name as name)
+        self.client.post(reverse('login'), {'name': 'Test', 'password': 'testpass123'})
+        response = self.client.get(reverse('profile'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'accounts/profile.html')
+
+    def test_profile_view_post(self):
+        user = User.objects.create_user(username='testuser', password='testpass123', role='student')
+        self.client.login(username='testuser', password='testpass123')
+        data = {
+            'first_name': 'Updated',
+            'last_name': 'Name',
+        }
+        response = self.client.post(reverse('profile'), data)
+        self.assertEqual(response.status_code, 302)
+        user.refresh_from_db()
+        self.assertEqual(user.first_name, 'Updated')
+        self.assertEqual(user.last_name, 'Name')
+
+    def test_delete_profile_view(self):
+        user = User.objects.create_user(username='testuser', password='testpass123', role='student', first_name='TestUser')
+        # Create related records
+        BroughtBy.objects.create(
+            user=user,
+            first_name='Parent',
+            last_name='Name',
+            relationship='Parent'
+        )
+        AuditLog.objects.create(user=user, action='test', details='test')
+        MedicalRecord.objects.create(student=user, description='Test record')
+        from datetime import date
+        StudentBookRecord.objects.create(student=user, book=None, date_read=date.today())
+        SchoolRecord.objects.create(student=user, subject='Math', grade='A', semester='Fall', year=2023)
+
+        # Login using the login view (which uses first_name as name)
+        self.client.post(reverse('login'), {'name': 'TestUser', 'password': 'testpass123'})
+        response = self.client.post(reverse('delete_profile'))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('home'))
+
+        # Verify user is deleted
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get(username='testuser')
+
+        # Verify related records are deleted (cascade deletion)
+        self.assertEqual(BroughtBy.objects.filter(user=user).count(), 0)
+        self.assertEqual(AuditLog.objects.filter(user=user).count(), 0)
+        self.assertEqual(MedicalRecord.objects.filter(student=user).count(), 0)
+        self.assertEqual(StudentBookRecord.objects.filter(student=user).count(), 0)
+        self.assertEqual(SchoolRecord.objects.filter(student=user).count(), 0)
+
+    def test_delete_profile_view_get_request(self):
+        user = User.objects.create_user(username='testuser', password='testpass123', role='student')
+        self.client.login(username='testuser', password='testpass123')
+        response = self.client.get(reverse('delete_profile'))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('profile'))

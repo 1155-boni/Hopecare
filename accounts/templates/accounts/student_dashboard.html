@@ -1,115 +1,44 @@
-{% extends 'base.html' %}
-
-{% block title %}Student Dashboard{% endblock %}
-
+{% extends "base.html" %}
 {% block content %}
-<div class="container-fluid py-4">
-    <div class="container">
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
-                        <h1 class="mb-0"><i class="bi bi-speedometer2 me-2"></i>Student Dashboard</h1>
-                        <p class="mb-0">Track your reading progress and achievements</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Progress Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-success text-white text-center py-3 rounded-top-4">
-                        <h4 class="mb-0"><i class="bi bi-graph-up me-2"></i>Reading Progress</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <div class="text-center mb-4">
-                            <h2 class="text-success">{{ book_records.count }}</h2>
-                            <p class="text-muted">Books Read</p>
-                        </div>
-                        <div class="progress mb-3" style="height: 20px;">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ progress_width }}%" aria-valuenow="{{ book_records.count }}" aria-valuemin="0" aria-valuemax="10">
-                                {{ book_records.count }}
-                            </div>
-                        </div>
-                        <p class="text-center text-muted">
-                            Keep reading to track your progress!
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-4">
-            <!-- Books Read Section -->
-            <div class="col-lg-6">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-info text-white text-center py-3 rounded-top-4">
-                        <h4 class="mb-0"><i class="bi bi-book me-2"></i>Books Read</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        {% if book_records %}
-                            <div class="list-group list-group-flush">
-                                {% for record in book_records %}
-                                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                        <div>
-                                            <strong>{{ record.book.title }}</strong>
-                                            <br><small class="text-muted">{{ record.date_read|date:"M d, Y" }}</small>
-                                        </div>
-                                        <i class="bi bi-check-circle-fill text-success"></i>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="text-center py-4">
-                                <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
-                                <p class="text-muted mt-3">No books read yet. Start your reading journey!</p>
-                            </div>
-                        {% endif %}
-                        <div class="text-center mt-4">
-                            <a href="{% url 'add_book_record' %}" class="btn btn-info btn-lg rounded-pill px-4">
-                                <i class="bi bi-plus-circle me-2"></i>Add Book Record
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- School Records Section -->
-            <div class="col-lg-6">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-secondary text-white text-center py-3 rounded-top-4">
-                        <h4 class="mb-0"><i class="bi bi-mortarboard me-2"></i>School Records</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        {% if school_records %}
-                            <div class="list-group list-group-flush">
-                                {% for record in school_records %}
-                                    <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                        <div>
-                                            <strong>{{ record.subject }}</strong>
-                                            <br><small class="text-muted">Grade: {{ record.grade }}</small>
-                                        </div>
-                                        <span class="badge bg-primary">{{ record.grade }}</span>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            <div class="text-center py-4">
-                                <i class="bi bi-mortarboard text-muted" style="font-size: 3rem;"></i>
-                                <p class="text-muted mt-3">No school records yet. Add your academic achievements!</p>
-                            </div>
-                        {% endif %}
-                        <div class="text-center mt-4">
-                            <a href="{% url 'add_school_record' %}" class="btn btn-secondary btn-lg rounded-pill px-4">
-                                <i class="bi bi-plus-circle me-2"></i>Add School Record
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<h2>Student Dashboard</h2>
+<div>
+    <h3>Book Records</h3>
+    <ul>
+        {% for record in book_records %}
+        <li>{{ record.book.title }} - {{ record.status }}</li>
+        {% empty %}
+        <li>No book records found.</li>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <h3>School Records</h3>
+    <ul>
+        {% for record in school_records %}
+        <li>{{ record.school_name }} - {{ record.year }}</li>
+        {% empty %}
+        <li>No school records found.</li>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <h3>Badge</h3>
+    <p>{{ badge }}</p>
+</div>
+<div>
+    <h3>Progress</h3>
+    <div style="width: 100%; background-color: #ddd;">
+        <div style="width: {{ progress_width }}%; background-color: #4CAF50; height: 24px;"></div>
     </div>
 </div>
+
+<div>
+    <h3>Medical Records</h3>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ medical_record_form.as_p }}
+        <button type="submit" class="btn btn-primary">Add Medical Record</button>
+    </form>
+</div>
+
 {% endblock %}

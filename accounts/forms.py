@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User
+from .models import User, MedicalRecord
 from PIL import Image
 import io
 
@@ -39,6 +39,14 @@ class BroughtByForm(forms.ModelForm):
             if field not in ['email', 'password1', 'password2']:
                 self.fields[field].required = True
 
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        if password1 and password2 and password1 != password2:
+            raise forms.ValidationError('Passwords do not match.')
+        return cleaned_data
+
     class Meta:
         model = BroughtBy
         fields = ['id_number', 'phone_number', 'first_name', 'middle_name', 'last_name', 'relationship']
@@ -51,20 +59,22 @@ class BroughtByForm(forms.ModelForm):
             'relationship': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
         }
 
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get('password1')
-        password2 = cleaned_data.get('password2')
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError('Passwords do not match.')
-        return cleaned_data
-
 class CustomUserCreationForm(UserCreationForm):
-    role = forms.ChoiceField(choices=[('student', 'Student'), ('librarian', 'Librarian'), ('storekeeper', 'Storekeeper')])
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=30, required=True)
+    last_name = forms.CharField(max_length=30, required=True)
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'role', 'password1', 'password2')
+        fields = ('email', 'first_name', 'last_name', 'password1', 'password2')
+
+    def save(self, commit=True):
+        user = super(UserCreationForm, self).save(commit=False)
+        user.username = self.cleaned_data['email']
+        user.set_password(self.cleaned_data["password1"])
+        if commit:
+            user.save()
+        return user
 
 class UserProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -89,3 +99,12 @@ class UserProfileForm(forms.ModelForm):
             if profile_picture.size > 5 * 1024 * 1024:  # 5MB max
                 raise forms.ValidationError('Image file too large (max 5MB).')
         return profile_picture
+
+class MedicalRecordForm(forms.ModelForm):
+    class Meta:
+        model = MedicalRecord
+        fields = ['description', 'doctor_name']
+        widgets = {
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'doctor_name': forms.TextInput(attrs={'class': 'form-control'}),
+        }

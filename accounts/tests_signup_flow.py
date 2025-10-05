@@ -20,6 +20,9 @@ class SignupFlowTestCase(TestCase):
             'middle_name': 'M',
             'last_name': 'Doe',
             'date_of_birth': '2000-01-01',
+            'gender': 'male',
+            'school_name': 'Test School',
+            'student_class': '10A',
             'date_of_admission': '2018-01-01',
             'time_of_admission': '09:00:00',
             'admission_number': 'ADM123',
@@ -28,7 +31,7 @@ class SignupFlowTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertIn('/accounts/signup/?step=3', response.url)
 
-        # Step 3: Brought by details
+        # Step 3: Brought by details and account creation
         brought_by_data = {
             'id_number': 'ID123456',
             'phone_number': '1234567890',
@@ -36,22 +39,13 @@ class SignupFlowTestCase(TestCase):
             'middle_name': 'A',
             'last_name': 'Doe',
             'relationship': 'Mother',
-        }
-        response = self.client.post(reverse('signup') + '?step=3', brought_by_data)
-        self.assertEqual(response.status_code, 302)
-        self.assertIn('/accounts/signup/?step=4', response.url)
-
-        # Step 4: Account creation
-        account_data = {
             'email': 'john.doe@example.com',
-            'first_name': 'John',
-            'last_name': 'Doe',
             'password1': 'strongpassword123',
             'password2': 'strongpassword123',
         }
-        response = self.client.post(reverse('signup') + '?step=4', account_data)
+        response = self.client.post(reverse('signup') + '?step=3', brought_by_data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('home'))
+        self.assertEqual(response.url, reverse('student_dashboard'))
 
         # Verify user created
         user = User.objects.get(email='john.doe@example.com')
@@ -62,6 +56,22 @@ class SignupFlowTestCase(TestCase):
     def test_non_student_signup_flow(self):
         # Step 1: Role selection non-student
         response = self.client.post(reverse('signup') + '?step=1', {'role': 'librarian'})
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/accounts/signup/?step=2', response.url)
+
+        # Step 2: User details (optional for non-student)
+        user_details = {
+            'first_name': 'Lib',
+            'last_name': 'Rarian',
+            'date_of_birth': '',
+            'gender': '',
+            'school_name': '',
+            'student_class': '',
+            'date_of_admission': '',
+            'time_of_admission': '',
+            'admission_number': '',
+        }
+        response = self.client.post(reverse('signup') + '?step=2', user_details)
         self.assertEqual(response.status_code, 302)
         self.assertIn('/accounts/signup/?step=5', response.url)
 
@@ -75,7 +85,7 @@ class SignupFlowTestCase(TestCase):
         }
         response = self.client.post(reverse('signup') + '?step=5', account_data)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, reverse('home'))
+        self.assertEqual(response.url, reverse('librarian_dashboard'))
 
         # Verify user created
         user = User.objects.get(email='lib@example.com')

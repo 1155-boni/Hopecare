@@ -52,3 +52,12 @@ class AuditLog(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.action} - {self.timestamp}"
+
+class MedicalRecord(models.Model):
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='medical_records')
+    record_date = models.DateField(auto_now_add=True)
+    description = models.TextField()
+    doctor_name = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"Medical Record for {self.student.email} on {self.record_date}"
