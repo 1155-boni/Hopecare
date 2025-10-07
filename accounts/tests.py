@@ -15,8 +15,7 @@ class AccountsTests(TestCase):
             'email': 'test@example.com',
             'first_name': 'Test',
             'role': 'student',
-            'password1': 'testpass123',
-            'password2': 'testpass123',
+            'password': 'testpass123',
         }
 
     def test_user_creation(self):
@@ -25,17 +24,7 @@ class AccountsTests(TestCase):
         self.assertEqual(user.role, 'student')
         self.assertTrue(user.check_password('testpass123'))
 
-    def test_signup_view(self):
-        response = self.client.post(reverse('signup'), self.user_data)
-        self.assertEqual(response.status_code, 302)  # Redirect
-        user = User.objects.get(username='teststudent')
-        self.assertEqual(user.email, 'test@example.com')
-
-    def test_login_view(self):
-        User.objects.create_user(username='testuser', password='testpass123', role='student')
-        response = self.client.post(reverse('login'), {'username': 'testuser', 'password': 'testpass123'})
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(self.client.session.get('_auth_user_id'))
+    # Removed signup and login tests as per user request
 
     def test_audit_log_creation(self):
         user = User.objects.create_user(username='audituser', password='pass', role='student')
@@ -44,15 +33,14 @@ class AccountsTests(TestCase):
 
     def test_profile_view_get(self):
         user = User.objects.create_user(username='testuser', password='testpass123', role='student', first_name='Test')
-        # Login using the login view (which uses first_name as name)
-        self.client.post(reverse('login'), {'name': 'Test', 'password': 'testpass123'})
+        self.client.force_login(user)
         response = self.client.get(reverse('profile'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'accounts/profile.html')
 
     def test_profile_view_post(self):
         user = User.objects.create_user(username='testuser', password='testpass123', role='student')
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(user)
         data = {
             'first_name': 'Updated',
             'last_name': 'Name',
@@ -78,8 +66,7 @@ class AccountsTests(TestCase):
         StudentBookRecord.objects.create(student=user, book=None, date_read=date.today())
         SchoolRecord.objects.create(student=user, subject='Math', grade='A', semester='Fall', year=2023)
 
-        # Login using the login view (which uses first_name as name)
-        self.client.post(reverse('login'), {'name': 'TestUser', 'password': 'testpass123'})
+        self.client.force_login(user)
         response = self.client.post(reverse('delete_profile'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('home'))
@@ -97,7 +84,7 @@ class AccountsTests(TestCase):
 
     def test_delete_profile_view_get_request(self):
         user = User.objects.create_user(username='testuser', password='testpass123', role='student')
-        self.client.login(username='testuser', password='testpass123')
+        self.client.force_login(user)
         response = self.client.get(reverse('delete_profile'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('profile'))

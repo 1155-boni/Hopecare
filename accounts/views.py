@@ -14,8 +14,31 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Removed signup, login, logout, and student_dashboard views as per user request
+# Removed signup and student_dashboard views as per user request
 
+def login_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        password = request.POST.get('password')
+        user = None
+        # Try to find user by username or email (phone_number field does not exist)
+        try:
+            user_obj = User.objects.get(Q(username=name) | Q(email=name))
+            user = authenticate(request, username=user_obj.email, password=password)
+        except User.DoesNotExist:
+            user = None
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid credentials')
+    return render(request, 'accounts/login.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')
+
+@login_required
 def profile(request):
     if request.method == 'POST':
         form = UserProfileForm(request.POST, request.FILES, instance=request.user, user=request.user)
@@ -123,3 +146,8 @@ def delete_profile(request):
         return redirect('home')
     else:
         return redirect('profile')
+
+def home(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    return render(request, 'home.html', {'user': request.user})
