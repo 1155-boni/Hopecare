@@ -25,11 +25,7 @@
                             <i class="bi bi-house-door me-2"></i>Overview
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link rounded-pill me-2" id="librarian-tab" data-bs-toggle="tab" data-bs-target="#librarian" type="button" role="tab">
-                            <i class="bi bi-book me-2"></i>Librarian View
-                        </button>
-                    </li>
+
                     <li class="nav-item" role="presentation">
                         <button class="nav-link rounded-pill" id="storekeeper-tab" data-bs-toggle="tab" data-bs-target="#storekeeper" type="button" role="tab">
                             <i class="bi bi-box-seam me-2"></i>Storekeeper View
@@ -95,81 +91,7 @@
                 </div>
             </div>
 
-            <!-- Records Section -->
-            <div class="row g-4 mb-4">
-                <div class="col-lg-6">
-                    <div class="card shadow-lg border-0 rounded-4">
-                        <div class="card-header bg-success text-white py-3 rounded-top-4">
-                            <h4 class="mb-0"><i class="bi bi-book me-2"></i>Book Records</h4>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Student</th>
-                                            <th>Book</th>
-                                            <th>Date Read</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for record in book_records %}
-                                            <tr>
-                                                <td><strong>{{ record.student.get_full_name }}</strong></td>
-                                                <td>{{ record.book.title }}</td>
-                                                <td>{{ record.date_read|date:"M d, Y" }}</td>
-                                            </tr>
-                                        {% empty %}
-                                            <tr>
-                                                <td colspan="3" class="text-center py-4">
-                                                    <i class="bi bi-journal-x text-muted" style="font-size: 2rem;"></i>
-                                                    <p class="text-muted mt-2">No book records.</p>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="card shadow-lg border-0 rounded-4">
-                        <div class="card-header bg-info text-white py-3 rounded-top-4">
-                            <h4 class="mb-0"><i class="bi bi-mortarboard me-2"></i>School Records</h4>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Student</th>
-                                            <th>Subject</th>
-                                            <th>Grade</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for record in school_records %}
-                                            <tr>
-                                                <td><strong>{{ record.student.get_full_name }}</strong></td>
-                                                <td>{{ record.subject }}</td>
-                                                <td><span class="badge bg-primary">{{ record.grade }}</span></td>
-                                            </tr>
-                                        {% empty %}
-                                            <tr>
-                                                <td colspan="3" class="text-center py-4">
-                                                <i class="bi bi-mortarboard text-muted" style="font-size: 2rem;"></i>
-                                                <p class="text-muted mt-2">No school records.</p>
-                                            </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
             <!-- Stocks Section -->
             <div class="row">
@@ -216,102 +138,7 @@
             </div>
         </div>
 
-        <!-- Librarian View Tab -->
-        <div class="tab-pane fade" id="librarian" role="tabpanel">
-            <!-- Students Section -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card shadow-lg border-0 rounded-4">
-                        <div class="card-header bg-primary text-white py-3 rounded-top-4">
-                            <h4 class="mb-0"><i class="bi bi-people me-2"></i>Students Management</h4>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="mb-4">
-                                <input type="text" id="search-students" placeholder="Search students by name..." class="form-control form-control-lg rounded-pill">
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th><i class="bi bi-person me-1"></i>Name</th>
-                                            <th><i class="bi bi-envelope me-1"></i>Email</th>
-                                            <th><i class="bi bi-gear me-1"></i>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="students-table">
-                                        {% for student in students %}
-                                            <tr>
-                                                <td>
-                                                    <strong>{{ student.get_full_name }}</strong>
-                                                </td>
-                                                <td>{{ student.email }}</td>
-                                                <td>
-                                                    <a href="{% url 'preview_student' student.id %}" class="btn btn-outline-info btn-sm rounded-pill">
-                                                        <i class="bi bi-eye"></i> Preview
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        {% empty %}
-                                            <tr>
-                                                <td colspan="3" class="text-center py-4">
-                                                    <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
-                                                    <p class="text-muted mt-3">No students found.</p>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Book Records Section -->
-            <div class="row">
-                <div class="col-12">
-                    <div class="card shadow-lg border-0 rounded-4">
-                        <div class="card-header bg-info text-white py-3 rounded-top-4 d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0"><i class="bi bi-journal-text me-2"></i>Book Records</h4>
-                            <a href="{% url 'add_book' %}" class="btn btn-light btn-lg rounded-pill px-4">
-                                <i class="bi bi-plus-circle me-2"></i>Add Book
-                            </a>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th><i class="bi bi-person me-1"></i>Student</th>
-                                            <th><i class="bi bi-book me-1"></i>Book</th>
-                                            <th><i class="bi bi-calendar me-1"></i>Date Read</th>
-                                            <th><i class="bi bi-sticky me-1"></i>Notes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for record in book_records %}
-                                            <tr>
-                                                <td><strong>{{ record.student.get_full_name }}</strong></td>
-                                                <td>{{ record.book.title }}</td>
-                                                <td>{{ record.date_read|date:"M d, Y" }}</td>
-                                                <td>{{ record.notes|truncatechars:50|default:"No notes" }}</td>
-                                            </tr>
-                                        {% empty %}
-                                            <tr>
-                                                <td colspan="4" class="text-center py-4">
-                                                    <i class="bi bi-journal-x text-muted" style="font-size: 3rem;"></i>
-                                                    <p class="text-muted mt-3">No book records found.</p>
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Storekeeper View Tab -->
         <div class="tab-pane fade" id="storekeeper" role="tabpanel">
@@ -456,22 +283,5 @@
         </div>
     </div>
 
-    <script>
-        // Search functionality for students table in Librarian View
-        document.getElementById('search-students').addEventListener('keyup', function() {
-            var input = this.value.toLowerCase();
-            var table = document.getElementById('students-table');
-            var tr = table.getElementsByTagName('tr');
-            for (var i = 1; i < tr.length; i++) {
-                var td = tr[i].getElementsByTagName('td')[0];
-                if (td) {
-                    if (td.innerHTML.toLowerCase().indexOf(input) > -1) {
-                        tr[i].style.display = "";
-                    } else {
-                        tr[i].style.display = "none";
-                    }
-                }
-            }
-        });
-    </script>
+
 {% endblock %}

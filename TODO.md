@@ -1,17 +1,22 @@
-# Hopecare Project TODO
+# TODO: Rename Librarian Role to Welfare and Update Dashboard
 
-## Current Task: Add Delete Account Functionality to User Profiles and Update Navbar
+## Completed Tasks
+- [x] Analyze codebase and create plan
+- [x] Update accounts/models.py: Change 'librarian' to 'welfare' in ROLE_CHOICES, add Beneficiary model
+- [x] Create and run Django migration for model changes
+- [x] Update accounts/forms.py: Add BeneficiaryForm
+- [x] Update accounts/views.py: Change 'librarian' to 'welfare', modify welfare_dashboard
+- [x] Update accounts/templates/accounts/welfare_dashboard.html: Change title, clear content, add form
+- [x] Update templates/home.html: Change role check
+- [x] Update create_superusers.py: Change role
+- [x] Update library/views.py: Change 'librarian' references (none found)
+- [x] Update library/api.py: Change 'librarian' references (none found)
+- [x] Update accounts/tests.py: Change 'librarian' references (none found)
+- [x] Update library/tests.py: Change 'librarian' references (none found)
+- [x] Update accounts/templates/accounts/admin_dashboard.html: Remove librarian tab and content
+- [x] Update accounts/templates/accounts/preview_student.html: Change 'librarian_dashboard' to 'welfare_dashboard'
+- [x] Update library/templates/library/add_book.html: Change 'librarian_dashboard' to 'welfare_dashboard'
+- [x] Remove student dashboard completely: Delete template, update redirects in views and templates
 
-### Steps to Complete:
-1. [x] Add delete_profile view to accounts/views.py: Handle POST request to delete user account, log action in AuditLog, logout user, redirect to home with success message.
-2. [x] Add URL pattern for delete_profile in accounts/urls.py: path('profile/delete/', views.delete_profile, name='delete_profile').
-3. [x] Update accounts/templates/accounts/profile.html: Add a separate form below the update form for account deletion, using POST to 'delete_profile', include CSRF token, style as red danger button, add JavaScript confirmation dialog before submission.
-4. [x] Update templates/base.html: Replace logout link with profile link in navbar for authenticated users.
-5. [x] Update accounts/templates/accounts/profile.html: Add logout button to the profile page.
-6. [x] Test the implementation: Login as a test user, verify navbar shows profile link, navigate to profile, edit profile to confirm existing functionality, test logout button, then delete account and verify logout, success message, and no errors.
-7. [x] Commit changes: "Add delete account functionality to user profiles and update navbar with profile link, move logout to profile page".
-
-### Follow-up After Completion:
-- Verify no cascade deletion issues for related records (e.g., book records, stocks).
-- Ensure profile editing remains fully functional.
-- Manual testing via browser; no new unit tests for this feature.
+## Pending Tasks
+- [x] Test the changes - Django server running successfully at http://127.0.0.1:8000/

@@ -1,12 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import User, MedicalRecord
+from .models import User, Beneficiary
 from PIL import Image
 import io
-
-from .models import BroughtBy
-
+    
 class UserDetailsForm(forms.ModelForm):
+    
+    
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields:
@@ -14,49 +15,13 @@ class UserDetailsForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'middle_name', 'last_name', 'date_of_birth', 'gender', 'school_name', 'student_class', 'date_of_admission', 'time_of_admission', 'admission_number']
+        fields = ['first_name', 'middle_name', 'last_name', 'date_of_birth', 'gender']
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-lg rounded-pill'}),
             'gender': forms.Select(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'school_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'student_class': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'date_of_admission': forms.DateInput(attrs={'type': 'date', 'class': 'form-control form-control-lg rounded-pill'}),
-            'time_of_admission': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control form-control-lg rounded-pill'}),
             'first_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
             'middle_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'admission_number': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-        }
-
-class BroughtByForm(forms.ModelForm):
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'class': 'form-control form-control-lg rounded-pill'}))
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control form-control-lg rounded-pill'}))
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control form-control-lg rounded-pill'}))
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields:
-            if field not in ['email', 'password1', 'password2']:
-                self.fields[field].required = True
-
-    def clean(self):
-        cleaned_data = super().clean()
-        password1 = cleaned_data.get('password1')
-        password2 = cleaned_data.get('password2')
-        if password1 and password2 and password1 != password2:
-            raise forms.ValidationError('Passwords do not match.')
-        return cleaned_data
-
-    class Meta:
-        model = BroughtBy
-        fields = ['id_number', 'phone_number', 'first_name', 'middle_name', 'last_name', 'relationship']
-        widgets = {
-            'id_number': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'first_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'middle_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
-            'relationship': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
         }
 
 class CustomUserCreationForm(UserCreationForm):
@@ -100,11 +65,12 @@ class UserProfileForm(forms.ModelForm):
                 raise forms.ValidationError('Image file too large (max 5MB).')
         return profile_picture
 
-class MedicalRecordForm(forms.ModelForm):
+class BeneficiaryForm(forms.ModelForm):
     class Meta:
-        model = MedicalRecord
-        fields = ['description', 'doctor_name']
+        model = Beneficiary
+        fields = ['name', 'contact_info', 'address']
         widgets = {
-            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'doctor_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'contact_info': forms.TextInput(attrs={'class': 'form-control form-control-lg rounded-pill'}),
+            'address': forms.Textarea(attrs={'class': 'form-control form-control-lg rounded-pill', 'rows': 3}),
         }

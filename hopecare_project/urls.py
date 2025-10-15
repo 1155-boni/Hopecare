@@ -19,15 +19,13 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from accounts import views as accounts_views
 from accounts.api import UserViewSet, AuditLogViewSet
-from library.api import BookViewSet, StudentBookRecordViewSet, SchoolRecordViewSet
+from library.api import BookViewSet
 from inventory.api import ItemViewSet, StockViewSet
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
 router.register(r'audit-logs', AuditLogViewSet)
 router.register(r'books', BookViewSet)
-router.register(r'student-book-records', StudentBookRecordViewSet)
-router.register(r'school-records', SchoolRecordViewSet)
 router.register(r'items', ItemViewSet)
 router.register(r'stocks', StockViewSet)
 

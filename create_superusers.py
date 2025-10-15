@@ -32,7 +32,7 @@ def create_superusers():
             'email': 'welfare@hopecare.com',
             'username': 'welfare',
             'password': 'welfare@123',
-            'role': 'librarian'  # Assuming welfare role is 'librarian' as per existing roles
+            'role': 'welfare'
         }
     ]
 

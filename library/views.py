@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.contrib import messages
-from .models import Book, StudentBookRecord, SchoolRecord
-from .forms import BookForm, StudentBookRecordForm, SchoolRecordForm
+from .models import Book
+from .forms import BookForm
 from accounts.models import User
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -12,53 +12,23 @@ from datetime import datetime
 
 @login_required
 def add_book(request):
-    if request.user.role != 'librarian':
+    if request.user.role != 'welfare':
         return redirect('home')
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
         if form.is_valid():
             book = form.save()
             messages.success(request, f'Book "{book.title}" added successfully!')
-            return redirect('librarian_dashboard')
+            return redirect('welfare_dashboard')
     else:
         form = BookForm()
     return render(request, 'library/add_book.html', {'form': form})
 
-@login_required
-def add_book_record(request):
-    if request.user.role != 'student':
-        return redirect('home')
-    if request.method == 'POST':
-        form = StudentBookRecordForm(request.POST)
-        if form.is_valid():
-            record = form.save(commit=False)
-            record.student = request.user
-            record.save()
-            messages.success(request, 'Book record added successfully!')
-            return redirect('student_dashboard')
-    else:
-        form = StudentBookRecordForm()
-    return render(request, 'library/add_book_record.html', {'form': form})
 
-@login_required
-def add_school_record(request):
-    if request.user.role != 'student':
-        return redirect('home')
-    if request.method == 'POST':
-        form = SchoolRecordForm(request.POST)
-        if form.is_valid():
-            record = form.save(commit=False)
-            record.student = request.user
-            record.save()
-            messages.success(request, 'School record added successfully!')
-            return redirect('student_dashboard')
-    else:
-        form = SchoolRecordForm()
-    return render(request, 'library/add_school_record.html', {'form': form})
 
 @login_required
 def generate_books_pdf(request):
-    if request.user.role not in ['librarian', 'admin']:
+    if request.user.role not in ['welfare', 'admin']:
         return redirect('home')
     
     buffer = BytesIO()

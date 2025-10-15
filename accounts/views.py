@@ -5,9 +5,8 @@ from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
 from django.db.models import Q
-from .forms import UserProfileForm
-from .models import User, AuditLog
-from library.models import StudentBookRecord, SchoolRecord
+from .forms import UserProfileForm, BeneficiaryForm
+from .models import User, AuditLog, Beneficiary
 from inventory.models import Stock
 
 import logging
@@ -52,13 +51,23 @@ def profile(request):
     return render(request, 'accounts/profile.html', {'form': form})
 
 def welfare_dashboard(request):
-    if not request.user.is_authenticated or request.user.role != 'librarian':
+    if not request.user.is_authenticated or request.user.role != 'welfare':
         return redirect('home')
-    students = User.objects.filter(role='student')
-    book_records = StudentBookRecord.objects.all()
+    if request.method == 'POST':
+        form = BeneficiaryForm(request.POST)
+        if form.is_valid():
+            beneficiary = form.save(commit=False)
+            beneficiary.added_by = request.user
+            beneficiary.save()
+            messages.success(request, f'Beneficiary "{beneficiary.name}" added successfully.')
+            AuditLog.objects.create(user=request.user, action='Add Beneficiary', details=f'Added beneficiary {beneficiary.name}')
+            return redirect('welfare_dashboard')
+    else:
+        form = BeneficiaryForm()
+    beneficiaries = Beneficiary.objects.all()
     context = {
-        'students': students,
-        'book_records': book_records,
+        'form': form,
+        'beneficiaries': beneficiaries,
     }
     return render(request, 'accounts/welfare_dashboard.html', context)
 
@@ -79,47 +88,18 @@ def admin_dashboard(request):
     if not request.user.is_authenticated or request.user.role != 'admin':
         return redirect('home')
     users = User.objects.all()
-    students = User.objects.filter(role='student')
-    book_records = StudentBookRecord.objects.all()
-    school_records = SchoolRecord.objects.all()
     stocks = Stock.objects.all()
     low_stock = stocks.filter(quantity__lt=10)
     expiring = stocks.filter(item__expiry_date__lt=timezone.now() + timedelta(days=30))
     context = {
         'users': users,
-        'students': students,
-        'book_records': book_records,
-        'school_records': school_records,
         'stocks': stocks,
         'low_stock': low_stock,
         'expiring': expiring,
     }
     return render(request, 'accounts/admin_dashboard.html', context)
 
-def award_badge(request, student_id):
-    if not request.user.is_authenticated or request.user.role not in ['librarian', 'admin']:
-        return redirect('home')
-    if request.method == 'POST':
-        badge = request.POST.get('badge')
-        student = User.objects.get(id=student_id)
-        student.badge = badge
-        student.save()
-        AuditLog.objects.create(user=request.user, action='Award Badge', details=f'Awarded {badge} to {student.email}')
-        return redirect('admin_dashboard')
-    return redirect('admin_dashboard')
 
-def preview_student(request, student_id):
-    if not request.user.is_authenticated or request.user.role not in ['librarian', 'admin']:
-        return redirect('home')
-    student = User.objects.get(id=student_id)
-    book_records = StudentBookRecord.objects.filter(student=student)
-    school_records = SchoolRecord.objects.filter(student=student)
-    context = {
-        'student': student,
-        'book_records': book_records,
-        'school_records': school_records,
-    }
-    return render(request, 'accounts/preview_student.html', context)
 
 @login_required
 def delete_user(request, user_id):

@@ -2,8 +2,11 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.test import Client
-from .models import AuditLog, BroughtBy, MedicalRecord
-from library.models import StudentBookRecord, SchoolRecord
+from .models import AuditLog
+# Removed BroughtBy and MedicalRecord imports as these models were deleted
+# from .models import BroughtBy, MedicalRecord
+# Removed StudentBookRecord and SchoolRecord imports as these models were deleted
+# from library.models import StudentBookRecord, SchoolRecord
 
 User = get_user_model()
 
@@ -53,18 +56,18 @@ class AccountsTests(TestCase):
 
     def test_delete_profile_view(self):
         user = User.objects.create_user(username='testuser', password='testpass123', role='student', first_name='TestUser')
-        # Create related records
-        BroughtBy.objects.create(
-            user=user,
-            first_name='Parent',
-            last_name='Name',
-            relationship='Parent'
-        )
+        # Removed creation of related records for deleted models
+        # BroughtBy.objects.create(
+        #     user=user,
+        #     first_name='Parent',
+        #     last_name='Name',
+        #     relationship='Parent'
+        # )
         AuditLog.objects.create(user=user, action='test', details='test')
-        MedicalRecord.objects.create(student=user, description='Test record')
-        from datetime import date
-        StudentBookRecord.objects.create(student=user, book=None, date_read=date.today())
-        SchoolRecord.objects.create(student=user, subject='Math', grade='A', semester='Fall', year=2023)
+        # MedicalRecord.objects.create(student=user, description='Test record')
+        # from datetime import date
+        # StudentBookRecord.objects.create(student=user, book=None, date_read=date.today())
+        # SchoolRecord.objects.create(student=user, subject='Math', grade='A', semester='Fall', year=2023)
 
         self.client.force_login(user)
         response = self.client.post(reverse('delete_profile'))
@@ -76,11 +79,11 @@ class AccountsTests(TestCase):
             User.objects.get(username='testuser')
 
         # Verify related records are deleted (cascade deletion)
-        self.assertEqual(BroughtBy.objects.filter(user=user).count(), 0)
+        # self.assertEqual(BroughtBy.objects.filter(user=user).count(), 0)
         self.assertEqual(AuditLog.objects.filter(user=user).count(), 0)
-        self.assertEqual(MedicalRecord.objects.filter(student=user).count(), 0)
-        self.assertEqual(StudentBookRecord.objects.filter(student=user).count(), 0)
-        self.assertEqual(SchoolRecord.objects.filter(student=user).count(), 0)
+        # self.assertEqual(MedicalRecord.objects.filter(student=user).count(), 0)
+        # self.assertEqual(StudentBookRecord.objects.filter(student=user).count(), 0)
+        # self.assertEqual(SchoolRecord.objects.filter(student=user).count(), 0)
 
     def test_delete_profile_view_get_request(self):
         user = User.objects.create_user(username='testuser', password='testpass123', role='student')
