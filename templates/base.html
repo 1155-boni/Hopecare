@@ -18,6 +18,13 @@
                 <div class="navbar-nav ms-auto">
                     {% if user.is_authenticated %}
                         <span class="navbar-text me-3">Welcome, {{ user.get_full_name|default:user.username }} ({{ user.role }})</span>
+                        {% if user.role == 'welfare' %}
+                            <a class="nav-link" href="{% url 'welfare_dashboard' %}">Dashboard</a>
+                        {% elif user.role == 'storekeeper' %}
+                            <a class="nav-link" href="{% url 'storekeeper_dashboard' %}">Dashboard</a>
+                        {% elif user.role == 'admin' %}
+                            <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard</a>
+                        {% endif %}
                         <a class="nav-link" href="{% url 'profile' %}">Profile</a>
                     {% else %}
                         <a class="nav-link" href="{% url 'login' %}">Login</a>
