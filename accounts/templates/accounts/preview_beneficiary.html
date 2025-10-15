@@ -1,19 +1,19 @@
 {% extends 'base.html' %}
 
-{% block title %}Preview Student - {{ student.get_full_name }}{% endblock %}
+{% block title %}Preview Beneficiary - {{ beneficiary.get_full_name }}{% endblock %}
 
 {% block content %}
     <div class="container">
-        <h2>Student Profile: {{ student.get_full_name }}</h2>
+        <h2>Beneficiary Profile: {{ beneficiary.get_full_name }}</h2>
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Profile Information</h5>
-                        <p><strong>Email:</strong> {{ student.email }}</p>
-                        <p><strong>Role:</strong> {{ student.role|title }}</p>
-                        {% if student.profile_picture %}
-                            <img src="{{ student.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail" style="width: 150px;">
+                        <p><strong>Email:</strong> {{ beneficiary.email }}</p>
+                        <p><strong>Role:</strong> {{ beneficiary.role|title }}</p>
+                        {% if beneficiary.profile_picture %}
+                            <img src="{{ beneficiary.profile_picture.url }}" alt="Profile Picture" class="img-thumbnail" style="width: 150px;">
                         {% else %}
                             <p>No profile picture.</p>
                         {% endif %}
