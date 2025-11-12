@@ -20,27 +20,50 @@
                             </div>
                         {% endfor %}
                     {% endif %}
+
+                    {% if step == 'email' or not step %}
+                    <!-- Step 1: Enter Email -->
                     <form method="post">
                         {% csrf_token %}
+                        <input type="hidden" name="action" value="send_code">
                         <div class="mb-4">
-                            <label for="name" class="form-label fw-bold">
-                                <i class="bi bi-person me-1"></i>Email, Username or Phone Number
+                            <label for="email" class="form-label fw-bold">
+                                <i class="bi bi-envelope me-1"></i>Email Address
                             </label>
-                            <input type="text" class="form-control form-control-lg rounded-pill" name="name" id="name" placeholder="Enter your email, username or phone number" required>
+                            <input type="email" class="form-control form-control-lg rounded-pill" name="email" id="email" placeholder="Enter your email address" required>
                         </div>
-                        <div class="mb-4">
-                            <label for="password" class="form-label fw-bold">
-                                <i class="bi bi-lock me-1"></i>Password
-                            </label>
-                            <input type="password" class="form-control form-control-lg rounded-pill" name="password" id="password" placeholder="Enter your password" required>
-                        </div>
-
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary btn-lg rounded-pill">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                <i class="bi bi-send me-2"></i>Send Verification Code
                             </button>
                         </div>
                     </form>
+                    {% else %}
+                    <!-- Step 2: Enter Code -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="verify_code">
+                        <input type="hidden" name="email" value="{{ email }}">
+                        <div class="mb-3">
+                            <p class="text-muted">A verification code has been sent to <strong>{{ email }}</strong></p>
+                        </div>
+                        <div class="mb-4">
+                            <label for="code" class="form-label fw-bold">
+                                <i class="bi bi-key me-1"></i>Verification Code
+                            </label>
+                            <input type="text" class="form-control form-control-lg rounded-pill text-center" name="code" id="code" placeholder="Enter 6-digit code" maxlength="6" required pattern="[0-9]{6}" title="Please enter a 6-digit code">
+                        </div>
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Verify & Login
+                            </button>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-link" onclick="window.location.reload()">Use Different Email</button>
+                        </div>
+                    </form>
+                    {% endif %}
+
                     <div class="text-center mt-4">
                         <p class="mb-0 text-muted">Contact administrator for account creation.</p>
                     </div>

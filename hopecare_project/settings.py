@@ -35,7 +35,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', ''] + ([os.getenv('RENDER_EXTERNAL_HOSTNAME')] if os.getenv('RENDER_EXTERNAL_HOSTNAME') else [])
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'testserver'] + ([os.getenv('RENDER_EXTERNAL_HOSTNAME')] if os.getenv('RENDER_EXTERNAL_HOSTNAME') else [])
 
 CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}"] if os.getenv('RENDER_EXTERNAL_HOSTNAME') else []
 
@@ -166,6 +166,15 @@ cloudinary.config(
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email configuration
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Use console backend for development
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@hopecare.com')
 
 # Add this to enable debug logging for URL resolver
 LOGGING = {

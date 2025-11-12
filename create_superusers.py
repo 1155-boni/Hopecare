@@ -17,19 +17,19 @@ from accounts.models import User
 def create_superusers():
     superusers = [
         {
-            'email': 'admin@hopecare.com',
+            'email': 'dietboni@gmail.com',
             'username': 'admin',
             'password': 'admin@123',
             'role': 'admin'
         },
         {
-            'email': 'storekeeper@hopecare.com',
+            'email': 'dietboni@gmail.com',
             'username': 'storekeeper',
             'password': 'storekeeper@123',
             'role': 'storekeeper'
         },
         {
-            'email': 'welfare@hopecare.com',
+            'email': 'dietboni@gmail.com',
             'username': 'welfare',
             'password': 'welfare@123',
             'role': 'welfare'

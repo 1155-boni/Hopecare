@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Medical Records - {{ beneficiary.first_name }} {{ beneficiary.last_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-success text-white text-center py-4 rounded-top-4">
+                        <h1 class="mb-0"><i class="bi bi-clipboard-data me-2"></i>Medical Records</h1>
+                        <p class="mb-0">{{ beneficiary.first_name }} {{ beneficiary.last_name }} ({{ beneficiary.admission_number }})</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'preview_beneficiary' beneficiary.id %}" class="btn btn-secondary btn-lg rounded-pill px-4">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Profile
+                    </a>
+                    <a href="{% url 'add_medical_record' beneficiary.id %}" class="btn btn-primary btn-lg rounded-pill px-4">
+                        <i class="bi bi-plus-circle me-2"></i>Add Medical Record
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                {% if medical_records %}
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header bg-info text-white py-3 rounded-top-4">
+                            <h5 class="mb-0"><i class="bi bi-list-ul me-2"></i>Medical Records History</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th class="border-0 py-3 px-4">Date</th>
+                                            <th class="border-0 py-3 px-4">Diagnosis</th>
+                                            <th class="border-0 py-3 px-4">Doctor</th>
+                                            <th class="border-0 py-3 px-4">Documents</th>
+                                            <th class="border-0 py-3 px-4">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for record in medical_records %}
+                                        <tr>
+                                            <td class="py-3 px-4">{{ record.date|date:"M d, Y" }}</td>
+                                            <td class="py-3 px-4">
+                                                <strong>{{ record.diagnosis|truncatechars:50 }}</strong>
+                                                {% if record.treatment %}
+                                                <br><small class="text-muted">Treatment: {{ record.treatment|truncatechars:50 }}</small>
+                                                {% endif %}
+                                            </td>
+                                            <td class="py-3 px-4">{{ record.doctor_name }}</td>
+                                            <td class="py-3 px-4">
+                                                {% if record.medical_documents %}
+                                                    <a href="{{ record.medical_documents.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-file-earmark-text me-1"></i>View
+                                                    </a>
+                                                {% else %}
+                                                    <span class="text-muted">No documents</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="py-3 px-4">
+                                                <a href="{% url 'edit_medical_record' beneficiary.id record.id %}" class="btn btn-sm btn-warning me-2">
+                                                    <i class="bi bi-pencil-square"></i> Edit
+                                                </a>
+                                                <a href="{% url 'delete_medical_record' beneficiary.id record.id %}" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-body text-center py-5">
+                            <i class="bi bi-clipboard-x text-muted" style="font-size: 4rem;"></i>
+                            <h4 class="text-muted mt-3">No Medical Records Found</h4>
+                            <p class="text-muted">There are no medical records for this beneficiary yet.</p>
+                            <a href="{% url 'add_medical_record' beneficiary.id %}" class="btn btn-primary btn-lg rounded-pill px-4">
+                                <i class="bi bi-plus-circle me-2"></i>Add First Medical Record
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

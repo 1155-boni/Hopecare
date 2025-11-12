@@ -24,22 +24,128 @@
                         <h4 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Add Beneficiary</h4>
                     </div>
                     <div class="card-body p-4">
-                        <form method="post">
+                        <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="row">
-                                <div class="col-md-4 mb-3">
-                                    <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
-                                    {{ form.name }}
+                                <!-- Personal Information -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name</label>
+                                    {{ form.first_name }}
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="{{ form.contact_info.id_for_label }}" class="form-label">Contact Info</label>
-                                    {{ form.contact_info }}
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.middle_name.id_for_label }}" class="form-label">Middle Name (Optional)</label>
+                                    {{ form.middle_name }}
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="{{ form.address.id_for_label }}" class="form-label">Address</label>
-                                    {{ form.address }}
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name</label>
+                                    {{ form.last_name }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.gender.id_for_label }}" class="form-label">Gender</label>
+                                    {{ form.gender }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">Date of Birth</label>
+                                    {{ form.date_of_birth }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.admission_number.id_for_label }}" class="form-label">Admission Number</label>
+                                    {{ form.admission_number }}
                                 </div>
                             </div>
+
+                            <!-- Admission Information -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.date_of_admission.id_for_label }}" class="form-label">Date of Admission</label>
+                                    {{ form.date_of_admission }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.time_of_admission.id_for_label }}" class="form-label">Time of Admission</label>
+                                    {{ form.time_of_admission }}
+                                </div>
+                            </div>
+
+                            <!-- Brought By Information -->
+                            <h5 class="mb-3">Brought By Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.brought_by_name.id_for_label }}" class="form-label">Name</label>
+                                    {{ form.brought_by_name }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.brought_by_contact.id_for_label }}" class="form-label">Contact</label>
+                                    {{ form.brought_by_contact }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.brought_by_id_number.id_for_label }}" class="form-label">ID Number</label>
+                                    {{ form.brought_by_id_number }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.brought_by_relationship.id_for_label }}" class="form-label">Relationship</label>
+                                    {{ form.brought_by_relationship }}
+                                </div>
+                            </div>
+
+                            <!-- Educational Information -->
+                            <h5 class="mb-3">Educational Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.school_name.id_for_label }}" class="form-label">School Name</label>
+                                    {{ form.school_name }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.student_class.id_for_label }}" class="form-label">Class</label>
+                                    {{ form.student_class }}
+                                </div>
+                            </div>
+
+                            <!-- Residence Information -->
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.residence_type.id_for_label }}" class="form-label">Residence Type</label>
+                                    {{ form.residence_type }}
+                                </div>
+                            </div>
+
+                            <!-- Family Information -->
+                            <h5 class="mb-3">Family Information</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        {{ form.has_relatives }}
+                                        <label for="{{ form.has_relatives.id_for_label }}" class="form-check-label">Has Relatives</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.relatives_count.id_for_label }}" class="form-label">Number of Relatives</label>
+                                    {{ form.relatives_count }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        {{ form.has_siblings }}
+                                        <label for="{{ form.has_siblings.id_for_label }}" class="form-check-label">Has Siblings</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.siblings_count.id_for_label }}" class="form-label">Number of Siblings</label>
+                                    {{ form.siblings_count }}
+                                </div>
+                            </div>
+
+                            <!-- Documents and Profile -->
+                            <h5 class="mb-3">Documents and Profile Picture</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.profile_picture.id_for_label }}" class="form-label">Profile Picture</label>
+                                    {{ form.profile_picture }}
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.documents.id_for_label }}" class="form-label">Documents</label>
+                                    {{ form.documents }}
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-success btn-lg rounded-pill px-4">
                                 <i class="bi bi-plus-circle me-2"></i>Add Beneficiary
                             </button>
@@ -62,22 +168,34 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th><i class="bi bi-person me-1"></i>Name</th>
-                                        <th><i class="bi bi-telephone me-1"></i>Contact Info</th>
-                                        <th><i class="bi bi-geo-alt me-1"></i>Address</th>
-                                        <th><i class="bi bi-calendar me-1"></i>Date Added</th>
+                                        <th><i class="bi bi-hash me-1"></i>Admission No.</th>
+                                        <th><i class="bi bi-gender-ambiguous me-1"></i>Gender</th>
+                                        <th><i class="bi bi-calendar me-1"></i>Age</th>
+                                        <th><i class="bi bi-building me-1"></i>School</th>
+                                        <th><i class="bi bi-house me-1"></i>Residence</th>
+                                        <th><i class="bi bi-calendar-check me-1"></i>Date Added</th>
+                                        <th><i class="bi bi-eye me-1"></i>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for beneficiary in beneficiaries %}
                                         <tr>
-                                            <td><strong>{{ beneficiary.name }}</strong></td>
-                                            <td>{{ beneficiary.contact_info|default:"N/A" }}</td>
-                                            <td>{{ beneficiary.address|truncatechars:50|default:"N/A" }}</td>
+                                            <td><strong>{{ beneficiary.first_name }} {{ beneficiary.last_name }}</strong></td>
+                                            <td>{{ beneficiary.admission_number }}</td>
+                                            <td>{{ beneficiary.gender|title }}</td>
+                                            <td>{{ beneficiary.age|default:"N/A" }}</td>
+                                            <td>{{ beneficiary.school_name|default:"N/A" }}</td>
+                                            <td>{{ beneficiary.residence_type|title }}</td>
                                             <td>{{ beneficiary.date_added|date:"M d, Y" }}</td>
+                                            <td>
+                                                <a href="{% url 'preview_beneficiary' beneficiary.id %}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i> View
+                                                </a>
+                                            </td>
                                         </tr>
                                     {% empty %}
                                         <tr>
-                                            <td colspan="4" class="text-center py-4">
+                                            <td colspan="8" class="text-center py-4">
                                                 <i class="bi bi-people text-muted" style="font-size: 3rem;"></i>
                                                 <p class="text-muted mt-3">No beneficiaries found.</p>
                                             </td>

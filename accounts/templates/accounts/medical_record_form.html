@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if medical_record %}Edit{% else %}Add{% endif %} Medical Record - {{ beneficiary.first_name }} {{ beneficiary.last_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-primary text-white text-center py-4 rounded-top-4">
+                        <h1 class="mb-0">
+                            <i class="bi bi-clipboard-plus me-2"></i>
+                            {% if medical_record %}Edit{% else %}Add{% endif %} Medical Record
+                        </h1>
+                        <p class="mb-0">{{ beneficiary.first_name }} {{ beneficiary.last_name }} ({{ beneficiary.admission_number }})</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mx-auto">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-light py-3 rounded-top-4">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pencil-square me-2"></i>
+                            {% if medical_record %}Edit{% else %}Add New{% endif %} Medical Record
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.date.id_for_label }}" class="form-label fw-bold">Date <span class="text-danger">*</span></label>
+                                    {{ form.date }}
+                                    {% if form.date.errors %}
+                                        <div class="text-danger small">{{ form.date.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="{{ form.doctor_name.id_for_label }}" class="form-label fw-bold">Doctor Name <span class="text-danger">*</span></label>
+                                    {{ form.doctor_name }}
+                                    {% if form.doctor_name.errors %}
+                                        <div class="text-danger small">{{ form.doctor_name.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.diagnosis.id_for_label }}" class="form-label fw-bold">Diagnosis <span class="text-danger">*</span></label>
+                                {{ form.diagnosis }}
+                                {% if form.diagnosis.errors %}
+                                    <div class="text-danger small">{{ form.diagnosis.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.treatment.id_for_label }}" class="form-label fw-bold">Treatment <span class="text-danger">*</span></label>
+                                {{ form.treatment }}
+                                {% if form.treatment.errors %}
+                                    <div class="text-danger small">{{ form.treatment.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.notes.id_for_label }}" class="form-label fw-bold">Additional Notes</label>
+                                {{ form.notes }}
+                                {% if form.notes.errors %}
+                                    <div class="text-danger small">{{ form.notes.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="{{ form.medical_documents.id_for_label }}" class="form-label fw-bold">Medical Documents</label>
+                                {{ form.medical_documents }}
+                                {% if form.medical_documents.errors %}
+                                    <div class="text-danger small">{{ form.medical_documents.errors.0 }}</div>
+                                {% endif %}
+                                <div class="form-text">Upload medical documents (PDF, images, etc.). Max 10MB.</div>
+                                {% if medical_record and medical_record.medical_documents %}
+                                    <div class="mt-2">
+                                        <small class="text-muted">Current file: <a href="{{ medical_record.medical_documents.url }}" target="_blank">{{ medical_record.medical_documents.name }}</a></small>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="{% url 'medical_records_list' beneficiary.id %}" class="btn btn-secondary btn-lg rounded-pill px-4">
+                                    <i class="bi bi-arrow-left me-2"></i>Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-4">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    {% if medical_record %}Update{% else %}Save{% endif %} Medical Record
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
