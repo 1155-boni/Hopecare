@@ -21,18 +21,19 @@ logger = logging.getLogger(__name__)
 
 def login_view(request):
     if request.method == 'POST':
+        username = request.POST.get('username')
         email = request.POST.get('email')
         code = request.POST.get('code')
         action = request.POST.get('action')
 
         if action == 'send_code':
             # Step 1: Send verification code
-            if not email:
-                messages.error(request, 'Please enter your email address.')
+            if not username or not email:
+                messages.error(request, 'Please enter both username and email address.')
                 return render(request, 'accounts/login.html', {'step': 'email'})
 
             try:
-                user = User.objects.get(email=email)
+                user = User.objects.get(username=username, email=email)
                 # Clean up expired codes for this user
                 EmailVerificationCode.objects.filter(user=user, expires_at__lt=timezone.now()).delete()
 
@@ -54,20 +55,20 @@ def login_view(request):
                 send_mail(subject, message, from_email, [email])
 
                 messages.success(request, 'Verification code sent to your email.')
-                return render(request, 'accounts/login.html', {'step': 'code', 'email': email})
+                return render(request, 'accounts/login.html', {'step': 'code', 'email': email, 'username': username})
 
             except User.DoesNotExist:
-                messages.error(request, 'No account found with this email address.')
+                messages.error(request, 'No account found with this username and email combination.')
                 return render(request, 'accounts/login.html', {'step': 'email'})
 
         elif action == 'verify_code':
             # Step 2: Verify code and login
-            if not email or not code:
-                messages.error(request, 'Please enter both email and verification code.')
-                return render(request, 'accounts/login.html', {'step': 'code', 'email': email})
+            if not username or not email or not code:
+                messages.error(request, 'Please enter username, email, and verification code.')
+                return render(request, 'accounts/login.html', {'step': 'code', 'email': email, 'username': username})
 
             try:
-                user = User.objects.get(email=email)
+                user = User.objects.get(username=username, email=email)
                 # Find valid code
                 verification_code = EmailVerificationCode.objects.filter(
                     user=user,
@@ -83,13 +84,13 @@ def login_view(request):
                     return redirect('home')
                 else:
                     messages.error(request, 'Invalid or expired verification code.')
-                    return render(request, 'accounts/login.html', {'step': 'code', 'email': email})
+                    return render(request, 'accounts/login.html', {'step': 'code', 'email': email, 'username': username})
 
             except User.DoesNotExist:
-                messages.error(request, 'No account found with this email address.')
+                messages.error(request, 'No account found with this username and email combination.')
                 return render(request, 'accounts/login.html', {'step': 'email'})
 
-    # Default: show email input
+    # Default: show username and email input
     return render(request, 'accounts/login.html', {'step': 'email'})
 
 def logout_view(request):
